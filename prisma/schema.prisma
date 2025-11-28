@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.sqlite"
+}
+
+model Session {
+  id          String    @id
+  shop        String
+  state       String
+  isOnline    Boolean   @default(false)
+  scope       String?
+  expires     DateTime?
+  accessToken String
+  userId      BigInt?
+}
+
+model TattooGeneration {
+  id          String   @id @default(uuid())
+  shop        String
+  imageUrl    String?  // User uploaded image
+  prompt      String?  // Optional user prompt or style description
+  style       String?  // Selected style (e.g., Line Art, Dotwork)
+  status      String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  resultUrl   String?  // URL of the generated tattoo design
+  tryOnUrl    String?  // URL of the virtual try-on result
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
