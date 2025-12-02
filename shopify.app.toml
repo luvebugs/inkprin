@@ -1,27 +1,28 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "your-client-id"
-name = "shopify-tattoo-generator"
-application_url = "https://shopify-tattoo-generator.com"
+client_id = "bd7ec68ca0bbe911dc979458c9c4f2f7"
+name = "inkprin-ai"
+application_url = "https://example.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "your-dev-store.myshopify.com"
+include_config_on_deploy = true
+
+[webhooks]
+api_version = "2026-01"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,read_products,write_orders,read_orders"
+scopes = "write_products"
 
 [auth]
-redirect_urls = [
-  "https://shopify-tattoo-generator.com/auth/callback",
-  "https://shopify-tattoo-generator.com/auth/shopify/callback",
-  "https://shopify-tattoo-generator.com/api/auth/callback"
-]
-
-[webhooks]
-api_version = "2024-01"
-
-[pos]
-embedded = false
+redirect_urls = [ "https://example.com/api/auth" ]
