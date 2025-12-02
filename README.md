@@ -23,6 +23,7 @@ Before you begin, you'll need the following:
 ```shell
 npm install -g @shopify/cli@latest
 ```
+5. **Nano Banana Pro API Key**: Get your API key from [Nano Banana Pro](https://nano-bananapro.com/) to enable AI tattoo generation.
 
 ### Setup
 
@@ -134,6 +135,53 @@ When you're ready to set up your app in production, you can follow [our deployme
 - [Manual deployment guide](https://shopify.dev/docs/apps/launch/deployment/deploy-to-hosting-service): This resource provides general guidance on the requirements of deployment including environment variables, secrets, and persistent data. 
 
 When you reach the step for [setting up environment variables](https://shopify.dev/docs/apps/deployment/web#set-env-vars), you also need to set the variable `NODE_ENV=production`.
+
+### Nano Banana Pro / 自定义网关配置
+
+To enable the AI tattoo generation feature, you need to configure Nano Banana Pro API credentials:
+
+1. **Get your API key**: Sign up at [Nano Banana Pro](https://nano-bananapro.com/) and obtain your API key.
+
+2. **Set environment variables**: Add the following to your environment variables (via Shopify CLI or your hosting provider):
+   ```bash
+   # 如果使用你自己的网关 https://nanoapi.poloai.top
+   NANO_API_KEY=your_gateway_token_sk...
+   NANO_API_URL=https://nanoapi.poloai.top
+
+   # 如果使用官方 Nano Banana 或其它后端，可保留旧变量名（非必需）
+   NANO_BANANA_API_KEY=your_api_key_here
+   NANO_BANANA_API_URL=https://api.nano-bananapro.com/v1/generate
+   ```
+
+3. **Local development**: When running `shopify app dev`, the CLI will prompt you to set these environment variables, or you can add them to a `.env` file in your project root (make sure `.env` is in your `.gitignore`).
+
+The tattoo generator component supports:
+- ✅ Text description input for generating tattoos
+- ✅ Image upload (up to 2 images, 5MB each) as reference
+- ✅ Multiple tattoo styles (Minimalist, Traditional, Watercolor, Geometric, Japanese)
+- ✅ Real-time generation with Nano Banana Pro AI engine
+- ✅ Result display and download functionality
+
+#### 手动调用示例（通过你的网关生成图片）
+
+```bash
+export NANO_API_KEY="sk_你的令牌"
+
+curl -s -X POST \
+  "https://nanoapi.poloai.top/v1beta/models/gemini-2.5-flash-image:generateContent" \
+  -H "Authorization: Bearer $NANO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "contents": [{
+          "role": "user",
+          "parts": [ { "text": "Create a picture of a nano banana dish in a fancy restaurant with a Gemini theme" } ]
+        }]
+      }' \
+  | jq -r '.candidates[0].content.parts[0].inline_data.data' \
+  | base64 --decode > gemini-native-image.png
+```
+
+如果返回结构不同，先输出完整响应检查：将 `| jq ...` 去掉并保存到文件查看。
 
 ## Gotchas / Troubleshooting
 

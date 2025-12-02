@@ -20,6 +20,9 @@ type Pages = {
   "/webhooks/app/uninstalled": {
     params: {};
   };
+  "/api/generate-tattoo": {
+    params: {};
+  };
   "/auth/login": {
     params: {};
   };
@@ -39,7 +42,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/webhooks/app/scopes_update" | "/webhooks/app/uninstalled" | "/auth/login" | "/auth/*" | "/app" | "/app/additional";
+    page: "/" | "/webhooks/app/scopes_update" | "/webhooks/app/uninstalled" | "/api/generate-tattoo" | "/auth/login" | "/auth/*" | "/app" | "/app/additional";
   };
   "routes/webhooks.app.scopes_update.tsx": {
     id: "routes/webhooks.app.scopes_update";
@@ -48,6 +51,10 @@ type RouteFiles = {
   "routes/webhooks.app.uninstalled.tsx": {
     id: "routes/webhooks.app.uninstalled";
     page: "/webhooks/app/uninstalled";
+  };
+  "routes/api.generate-tattoo.tsx": {
+    id: "routes/api.generate-tattoo";
+    page: "/api/generate-tattoo";
   };
   "routes/auth.login/route.tsx": {
     id: "routes/auth.login";
@@ -69,7 +76,7 @@ type RouteFiles = {
     id: "routes/app.additional";
     page: "/app/additional";
   };
-  "routes/app._index.tsx": {
+  "routes/app._index/route.tsx": {
     id: "routes/app._index";
     page: "/app";
   };
@@ -79,10 +86,11 @@ type RouteModules = {
   "root": typeof import("./app/root.tsx");
   "routes/webhooks.app.scopes_update": typeof import("./app/routes/webhooks.app.scopes_update.tsx");
   "routes/webhooks.app.uninstalled": typeof import("./app/routes/webhooks.app.uninstalled.tsx");
+  "routes/api.generate-tattoo": typeof import("./app/routes/api.generate-tattoo.tsx");
   "routes/auth.login": typeof import("./app/routes/auth.login/route.tsx");
   "routes/_index": typeof import("./app/routes/_index/route.tsx");
   "routes/auth.$": typeof import("./app/routes/auth.$.tsx");
   "routes/app": typeof import("./app/routes/app.tsx");
   "routes/app.additional": typeof import("./app/routes/app.additional.tsx");
-  "routes/app._index": typeof import("./app/routes/app._index.tsx");
+  "routes/app._index": typeof import("./app/routes/app._index/route.tsx");
 };
