@@ -9,12 +9,25 @@ import { saveImageToDB, getAllImagesFromDB, type SavedImage } from "../../utils/
 
 import GeneratorIcon from "../../assets/icons/generator.svg?react";
 import SparkleIcon from "../../assets/icons/sparkle.svg?react";
-import StyleIcon from "../../assets/icons/style.svg?react";
 import CheckIcon from "../../assets/icons/check.svg?react";
 import UploadIcon from "../../assets/icons/upload.svg?react";
 import LoadingIcon from "../../assets/icons/loading.svg?react";
 import CloseIcon from "../../assets/icons/close.svg?react";
 import PlusIcon from "../../assets/icons/plus.svg?react";
+import EyeIcon from "../../assets/icons/eye.svg?react";
+import DownloadIcon from "../../assets/icons/download.svg?react";
+
+import example1 from "../../assets/imgs/example1.webp";
+import example2 from "../../assets/imgs/example2.webp";
+import example3 from "../../assets/imgs/example3.webp";
+import example4 from "../../assets/imgs/example4.webp";
+import example5 from "../../assets/imgs/example5.webp";
+import example6 from "../../assets/imgs/example6.webp";
+import example7 from "../../assets/imgs/example7.webp";
+import example8 from "../../assets/imgs/example8.webp";
+import example9 from "../../assets/imgs/example9.webp";
+import example10 from "../../assets/imgs/example10.webp";
+import example11 from "../../assets/imgs/example11.webp";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
@@ -39,6 +52,20 @@ type TattooStyle =
   | "Watercolor"
   | "Japanese";
 
+const styleImages: Record<string, string> = {
+  "Ghibli": example1,
+  "Couple": example2,
+  "Creepy": example3,
+  "Egypt": example4,
+  "Paganic": example5,
+  "Flame Design": example6,
+  "Chicano": example7,
+  "Monospace Text": example8,
+  "Geometric": example9,
+  "Spiritual": example10,
+  "Dotwork": example11,
+};
+
 const surprisePrompts = [
   "A detailed floral forearm piece with a compass in a black and grey style",
   "A geometric mandala design with intricate patterns and symmetry",
@@ -61,8 +88,11 @@ export default function TattooGenerator() {
   const [isDragging, setIsDragging] = useState(false);
   const [showDesignChoicesModal, setShowDesignChoicesModal] = useState(false);
   const [historyImages, setHistoryImages] = useState<SavedImage[]>([]);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const submittingPromptRef = useRef("");
   const submittingStyleRef = useRef("");
+  const isHydrated = useRef(false);
+  const lastProcessedImageRef = useRef<string | null>(null);
 
   const isLoading = fetcher.state === "submitting" || fetcher.state === "loading";
 
@@ -75,31 +105,26 @@ export default function TattooGenerator() {
 
   // Sync fetcher data to state and DB
   const generatedImage = fetcher.data?.imageUrl || fetcher.data?.imageData;
+  
   useEffect(() => {
-    if (generatedImage) {
+    if (fetcher.state === "idle" && generatedImage && generatedImage !== lastProcessedImageRef.current) {
+      lastProcessedImageRef.current = generatedImage;
+      
       const promptUsed = submittingPromptRef.current || prompt;
       const styleUsed = submittingStyleRef.current || selectedStyle;
-      
-      // Avoid adding duplicate if the effect runs multiple times for same image
-      // Simple check: compare with latest image URL
-      setHistoryImages(prev => {
-        if (prev.length > 0 && prev[0].url === generatedImage) {
-            return prev;
-        }
-        
-        const newItem: SavedImage = {
-            id: Date.now().toString(),
-            url: generatedImage,
-            timestamp: Date.now(),
-            prompt: promptUsed,
-            style: styleUsed
-        };
-        
-        saveImageToDB(generatedImage, promptUsed, styleUsed);
-        return [newItem, ...prev];
-      });
+
+      const newItem: SavedImage = {
+        id: Date.now().toString(),
+        url: generatedImage,
+        timestamp: Date.now(),
+        prompt: promptUsed,
+        style: styleUsed
+      };
+
+      saveImageToDB(generatedImage, promptUsed, styleUsed);
+      setHistoryImages(prev => [newItem, ...prev]);
     }
-  }, [generatedImage]); // Only run when generatedImage changes
+  }, [fetcher.state, generatedImage, prompt, selectedStyle]); 
 
   useEffect(() => {
     if (fetcher.data?.error) {
@@ -134,6 +159,7 @@ export default function TattooGenerator() {
     });
 
     setUploadedImages((prev) => [...prev, ...validFiles]);
+    setShowDesignChoicesModal(false);
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -221,7 +247,7 @@ export default function TattooGenerator() {
                 {/* Text Input with Surprise Me Button */}
                 <div className="relative w-full flex">
                   <textarea
-                    className="w-full min-h-[140px] p-5 pb-14 rounded-xl bg-gray-100 text-gray-900 ring-0 ring-inset placeholder:text-gray-400 focus:ring focus:ring-inset focus:ring-indigo-400 sm:text-base leading-relaxed resize-none outline-none transition-shadow"
+                    className={`w-full min-h-[140px] p-5 ${imagePreviews.length > 0 ? 'pt-14' : 'pt-5'} rounded-xl bg-gray-100 text-gray-900 ring-0 ring-inset placeholder:text-gray-400 focus:ring focus:ring-inset focus:ring-indigo-400 sm:text-base leading-relaxed resize-none outline-none transition-shadow`}
                     placeholder="Describe your dream tattoo in detail... (e.g., 'A minimalist line art wolf howling at the moon with geometric shapes')"
                     value={prompt}
                     onChange={(e) => {
@@ -233,21 +259,39 @@ export default function TattooGenerator() {
                     rows={4}
                     maxLength={500}
                   />
+                  
+                  {imagePreviews.length > 0 && (
+                    <div className="absolute top-3 left-5 flex gap-2 z-10">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={index} className="relative w-10 h-10 rounded-md overflow-hidden border border-gray-200 group bg-white">
+                          <img src={preview} alt="Upload" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); removeImage(index); }}
+                            className="absolute top-0 right-0 bg-black/60 text-white p-0.5 rounded-bl-md opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <CloseIcon width="10" height="10" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   <div className="absolute bottom-3 px-3 flex items-center gap-2 w-full justify-between flex-nowrap">
                     <div>
                       <button
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-300 text-xs font-semibold transition-colors"
-                        onClick={handleSurpriseMe}
+                        className="inline-flex sm:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-300 text-xs font-semibold transition-colors"
+                        onClick={() => setShowDesignChoicesModal(true)}
                         type="button"
                         title="Surprise me!"
                       >
-                        <UploadIcon width="12" height="12" fill="#4f39f6"/>
+                        <UploadIcon width="12" height="12" />
                         <span>Upload</span>
                       </button>
                     </div>
                     <div className="flex flex-nowrap items-center justify-between gap-[inherit]">
                       <span className="text-xs text-gray-400 font-medium">
-                        {prompt.length}/500
+                        {prompt.length}/∞
                       </span>
                       <button
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-300 text-xs font-semibold transition-colors"
@@ -278,30 +322,37 @@ export default function TattooGenerator() {
                   <button
                     key={style}
                     className={`group relative flex flex-col items-center justify-center rounded-sm transition-all cursor-pointer aspect-square gap-2 ${isSelected
-                      ? "bg-indigo-50/50 ring ring-indigo-400 shadow-sm"
-                      : "border-gray-200 bg-white hover:border-indigo-300 hover:bg-gray-50"
+                      ? ""
+                      : "bg-white"
                       }`}
                     onClick={() => setSelectedStyle(style)}
                     type="button"
                   >
                     {isPro && (
-                      <div className="absolute top-1 left-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full shadow-sm">
+                      <div className="absolute top-1 left-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full shadow-sm z-10">
                         <span>PRO</span>
                       </div>
                     )}
-                    <div className={`p-2 rounded-full transition-colors ${isSelected ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-500 group-hover:bg-white group-hover:text-indigo-500'}`}>
+                    <div className={`rounded-full overflow-hidden w-16 h-16 flex items-center justify-center transition-all ${isSelected ? 'ring-2 ring-stone-500 shadow-md' : 'bg-gray-100 group-hover:shadow-md'}`}>
                       {style === "No Style" ? (
-                        <SparkleIcon width="24" height="24" />
+                        <div className={`p-2 rounded-full transition-colors ${isSelected ? 'bg-stone-100 text-stone-600' : 'bg-gray-100 text-gray-500 group-hover:bg-white group-hover:text-indigo-500'}`}>
+                          <SparkleIcon width="24" height="24" />
+                        </div>
                       ) : (
-                        <StyleIcon width="24" height="24" />
+                        <img
+                          src={styleImages[style]}
+                          alt={style}
+                          className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
+                        />
+                      )}
+                      {isSelected && (
+                        <div className="absolute top-1 right-2 text-white bg-black rounded-full p-0.5 shadow-sm z-10">
+                          <CheckIcon width="12" height="12" />
+                        </div>
                       )}
                     </div>
-                    <span className={`text-xs text-center ${isSelected ? 'text-indigo-900' : 'text-gray-600'}`}>{style}</span>
-                    {isSelected && (
-                      <div className="absolute top-1 right-1 text-indigo-600">
-                        <CheckIcon width="16" height="16" />
-                      </div>
-                    )}
+                    <span className={`text-xs text-center ${isSelected ? 'text-indigo-900 font-medium' : 'text-gray-600'}`}>{style}</span>
+
                   </button>
                 );
               })}
@@ -312,7 +363,7 @@ export default function TattooGenerator() {
           <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-between items-center">
             <div className="flex gap-3 w-full sm:w-auto">
               <button
-                className="relative w-full sm:w-fit bg-gray-100 hover:bg-gray-200 text-black rounded-full border-2 border-solid border-gray-300 cursor-pointer transition-all duration-0 flex items-center justify-center gap-2 px-4 py-3"
+                className=" hidden sm:inline-flex relative w-full sm:w-fit bg-gray-100 hover:bg-gray-200 text-black rounded-full border-2 border-solid border-gray-300 cursor-pointer transition-all duration-0 flex items-center justify-center gap-2 px-4 py-3"
                 onClick={() => setShowDesignChoicesModal(true)}
                 type="button"
               >
@@ -348,41 +399,82 @@ export default function TattooGenerator() {
         {historyImages.length > 0 && (
           <div className="border-t border-gray-100 bg-gray-50 p-8 flex flex-col items-center w-full">
             <h3 className="text-xl font-bold mb-6 text-gray-900">Your Generated Designs</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-6xl">
               {historyImages.map((img) => (
                 <div key={img.id} className="relative group bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden flex flex-col">
-                  <div className="aspect-square w-full overflow-hidden bg-gray-100 relative">
+                  <div 
+                    className="aspect-square w-full overflow-hidden bg-gray-100 relative cursor-pointer"
+                    onClick={() => setPreviewImage(img.url)}
+                  >
                     <img
-                        src={img.url}
-                        alt={`Tattoo ${img.prompt}`}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      src={img.url}
+                      alt={`Tattoo ${img.prompt}`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                  </div>
-                  
-                  <div className="p-4 flex flex-col gap-2">
-                    <div className="flex justify-between items-start">
-                        <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-full text-gray-600">
-                            {img.style || "No Style"}
-                        </span>
-                        <span className="text-xs text-gray-400">
-                            {new Date(img.timestamp).toLocaleDateString()}
-                        </span>
-                    </div>
-                    <p className="text-sm text-gray-800 line-clamp-2 font-medium" title={img.prompt}>
-                        {img.prompt || "No description"}
-                    </p>
                     
-                    <a
+                    <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPreviewImage(img.url);
+                        }}
+                        className="bg-white text-gray-800 p-2 rounded-full shadow-lg hover:scale-110 hover:bg-gray-50 transition-all duration-200"
+                        title="Preview"
+                      >
+                        <EyeIcon width="20" height="20" />
+                      </button>
+                      
+                      <a
                         href={img.url}
                         download={`tattoo-${img.id}.png`}
-                        className="mt-3 w-full text-center bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
-                    >
-                        Download
-                    </a>
+                        onClick={(e) => e.stopPropagation()}
+                        className="bg-white text-gray-800 p-2 rounded-full shadow-lg hover:scale-110 hover:bg-gray-50 transition-all duration-200"
+                        title="Download"
+                      >
+                        <DownloadIcon width="20" height="20" />
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="p-4 flex flex-col gap-2">
+                    <div className="flex justify-between items-start">
+                      <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-full text-gray-600">
+                        {img.style || "No Style"}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        {new Date(img.timestamp).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-800 line-clamp-2 font-medium" title={img.prompt}>
+                      {img.prompt || "No description"}
+                    </p>
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Image Preview Modal */}
+        {previewImage && (
+          <div 
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setPreviewImage(null)}
+          >
+            <div className="relative max-w-4xl max-h-[90vh] w-full flex items-center justify-center">
+              <button
+                className="absolute -top-12 right-0 text-white/70 hover:text-white p-2 transition-colors"
+                onClick={() => setPreviewImage(null)}
+              >
+                <CloseIcon width="32" height="32" />
+              </button>
+              <img 
+                src={previewImage} 
+                alt="Preview" 
+                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                onClick={(e) => e.stopPropagation()} 
+              />
             </div>
           </div>
         )}

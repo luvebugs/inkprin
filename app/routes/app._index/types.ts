@@ -1,0 +1,17 @@
+export type TattooStyle =
+  | "No Style"
+  | "Ghibli"
+  | "Couple"
+  | "Creepy"
+  | "Egypt"
+  | "Paganic"
+  | "Flame Design"
+  | "Chicano"
+  | "Monospace Text"
+  | "Geometric"
+  | "Spiritual"
+  | "Dotwork"
+  | "Minimalist"
+  | "Traditional"
+  | "Watercolor"
+  | "Japanese";

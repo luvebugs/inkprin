@@ -1,6 +1,7 @@
 export const DB_NAME = 'TattooGeneratorDB';
 export const STORE_NAME = 'images';
-export const DB_VERSION = 1;
+export const UPLOAD_STORE_NAME = 'uploaded_images';
+export const DB_VERSION = 2;
 
 export interface SavedImage {
   id: string;
@@ -28,8 +29,61 @@ export const openDB = (): Promise<IDBDatabase> => {
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.createObjectStore(STORE_NAME, { keyPath: 'id' });
       }
+      if (!db.objectStoreNames.contains(UPLOAD_STORE_NAME)) {
+        // We'll store files with a key, maybe 'current_upload_1', 'current_upload_2' or just auto increment
+        // Since we only allow 2 images, maybe just store them as a list?
+        // Or store each file. Let's use autoIncrement.
+        db.createObjectStore(UPLOAD_STORE_NAME, { autoIncrement: true });
+      }
     };
   });
+};
+
+export const saveUploadedImagesToDB = async (files: File[]) => {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([UPLOAD_STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(UPLOAD_STORE_NAME);
+    
+    // Clear existing uploads as we want to mirror the current state
+    await new Promise<void>((resolve, reject) => {
+      const clearRequest = store.clear();
+      clearRequest.onsuccess = () => resolve();
+      clearRequest.onerror = () => reject("Failed to clear uploaded images");
+    });
+
+    // Add new files
+    for (const file of files) {
+      store.add(file);
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject("Failed to save uploaded images");
+    });
+  } catch (error) {
+    console.error("Error saving uploaded images to IndexedDB:", error);
+  }
+};
+
+export const getUploadedImagesFromDB = async (): Promise<File[]> => {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([UPLOAD_STORE_NAME], 'readonly');
+    const store = transaction.objectStore(UPLOAD_STORE_NAME);
+    const request = store.getAll();
+
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => {
+        const result = request.result as File[];
+        resolve(result || []);
+      };
+      request.onerror = () => reject("Failed to retrieve uploaded images");
+    });
+  } catch (error) {
+    console.error("Error retrieving uploaded images:", error);
+    return [];
+  }
 };
 
 export const saveImageToDB = async (imageUrl: string, prompt?: string, style?: string) => {
