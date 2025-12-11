@@ -7,3 +7,7 @@
     --color-moss: #e3fc02;
     --text-tiny: 0.625rem;
 }
+
+:root {
+    --p-font-family-sans: var(--font-sans);
+}

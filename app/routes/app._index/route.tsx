@@ -1,186 +1,93 @@
-import { useState, useRef, useEffect } from "react";
-import type { HeadersFunction, LoaderFunctionArgs } from "react-router";
-import { useFetcher } from "react-router";
-import { useAppBridge } from "@shopify/app-bridge-react";
+import { useState, useCallback, useEffect } from "react";
+import { useLoaderData, useSubmit, useNavigation, useActionData } from "react-router";
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
+import { Page, Layout, Card, BlockStack } from "@shopify/polaris";
 import { authenticate } from "../../shopify.server";
-import { boundary } from "@shopify/shopify-app-react-router/server";
-import styles from './styles.module.css'
-import { saveImageToDB, getAllImagesFromDB, type SavedImage } from "../../utils/indexedDB";
+import { saveImageToDB, getAllImagesFromDB } from "../../utils/indexedDB";
 
-import GeneratorIcon from "../../assets/icons/generator.svg?react";
-import SparkleIcon from "../../assets/icons/sparkle.svg?react";
-import CheckIcon from "../../assets/icons/check.svg?react";
-import UploadIcon from "../../assets/icons/upload.svg?react";
-import LoadingIcon from "../../assets/icons/loading.svg?react";
-import CloseIcon from "../../assets/icons/close.svg?react";
-import PlusIcon from "../../assets/icons/plus.svg?react";
-import EyeIcon from "../../assets/icons/eye.svg?react";
-import DownloadIcon from "../../assets/icons/download.svg?react";
+// Components
+import { Header } from "./components/Header";
+import { PromptInput } from "./components/PromptInput";
+import { StyleSelector } from "./components/StyleSelector";
+import { ActionButtons } from "./components/ActionButtons";
+import { ResultGrid } from "./components/ResultGrid";
+import { ImagePreviewModal } from "./components/ImagePreviewModal";
+import { UploadModal } from "./components/UploadModal";
 
-import example1 from "../../assets/imgs/example1.webp";
-import example2 from "../../assets/imgs/example2.webp";
-import example3 from "../../assets/imgs/example3.webp";
-import example4 from "../../assets/imgs/example4.webp";
-import example5 from "../../assets/imgs/example5.webp";
-import example6 from "../../assets/imgs/example6.webp";
-import example7 from "../../assets/imgs/example7.webp";
-import example8 from "../../assets/imgs/example8.webp";
-import example9 from "../../assets/imgs/example9.webp";
-import example10 from "../../assets/imgs/example10.webp";
-import example11 from "../../assets/imgs/example11.webp";
+// Types and Constants
+import { TattooStyle } from "./types";
+import { surprisePrompts } from "./constants";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
-  return null;
+  return { apiKey: process.env.SHOPIFY_API_KEY || "" };
 };
 
-type TattooStyle =
-  | "No Style"
-  | "Ghibli"
-  | "Couple"
-  | "Creepy"
-  | "Egypt"
-  | "Paganic"
-  | "Flame Design"
-  | "Chicano"
-  | "Monospace Text"
-  | "Geometric"
-  | "Spiritual"
-  | "Dotwork"
-  | "Minimalist"
-  | "Traditional"
-  | "Watercolor"
-  | "Japanese";
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const { admin } = await authenticate.admin(request);
+  const formData = await request.formData();
+  const prompt = formData.get("prompt");
+  const style = formData.get("style");
 
-const styleImages: Record<string, string> = {
-  "Ghibli": example1,
-  "Couple": example2,
-  "Creepy": example3,
-  "Egypt": example4,
-  "Paganic": example5,
-  "Flame Design": example6,
-  "Chicano": example7,
-  "Monospace Text": example8,
-  "Geometric": example9,
-  "Spiritual": example10,
-  "Dotwork": example11,
+  // Simulate API call delay
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  // In a real app, you would call an image generation API here
+  // returning mock images for now
+  return {
+    status: "success",
+    images: [
+      "https://images.unsplash.com/photo-1590246814883-05add5d833a6?q=80&w=600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?q=80&w=600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1562962230-16e4623d36e6?q=80&w=600&auto=format&fit=crop"
+    ]
+  };
 };
-
-const surprisePrompts = [
-  "A detailed floral forearm piece with a compass in a black and grey style",
-  "A geometric mandala design with intricate patterns and symmetry",
-  "A watercolor-style dragon wrapped around the arm with vibrant colors",
-  "A minimalist line art portrait of a wolf howling at the moon",
-  "A traditional Japanese koi fish swimming upstream with cherry blossoms",
-  "An abstract geometric design with bold black lines and negative space",
-  "A realistic portrait tattoo with dramatic shading and depth",
-  "A neo-traditional rose with bold colors and decorative elements",
-];
 
 export default function TattooGenerator() {
-  const fetcher = useFetcher();
-  const shopify = useAppBridge();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { apiKey } = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
+  const submit = useSubmit();
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "submitting";
+
   const [prompt, setPrompt] = useState("");
   const [selectedStyle, setSelectedStyle] = useState<TattooStyle>("No Style");
-  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [showDesignChoicesModal, setShowDesignChoicesModal] = useState(false);
-  const [historyImages, setHistoryImages] = useState<SavedImage[]>([]);
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const submittingPromptRef = useRef("");
-  const submittingStyleRef = useRef("");
-  const isHydrated = useRef(false);
-  const lastProcessedImageRef = useRef<string | null>(null);
 
-  const isLoading = fetcher.state === "submitting" || fetcher.state === "loading";
-
-  // Load from DB on mount
+  // Load saved images from IndexedDB on mount
   useEffect(() => {
     getAllImagesFromDB().then((images) => {
-      setHistoryImages(images);
+      if (images && images.length > 0) {
+        setGeneratedImages(images.map((img) => img.url));
+      }
     });
   }, []);
 
-  // Sync fetcher data to state and DB
-  const generatedImage = fetcher.data?.imageUrl || fetcher.data?.imageData;
-  
+  // Watch for action data to update generated images
   useEffect(() => {
-    if (fetcher.state === "idle" && generatedImage && generatedImage !== lastProcessedImageRef.current) {
-      lastProcessedImageRef.current = generatedImage;
+    if (actionData?.status === "success" && actionData.images) {
+      setGeneratedImages(actionData.images);
       
-      const promptUsed = submittingPromptRef.current || prompt;
-      const styleUsed = submittingStyleRef.current || selectedStyle;
-
-      const newItem: SavedImage = {
-        id: Date.now().toString(),
-        url: generatedImage,
-        timestamp: Date.now(),
-        prompt: promptUsed,
-        style: styleUsed
-      };
-
-      saveImageToDB(generatedImage, promptUsed, styleUsed);
-      setHistoryImages(prev => [newItem, ...prev]);
+      // Save to IndexedDB
+      actionData.images.forEach((url: string) => {
+        saveImageToDB(url, prompt, selectedStyle);
+      });
     }
-  }, [fetcher.state, generatedImage, prompt, selectedStyle]); 
+  }, [actionData, prompt, selectedStyle]);
 
-  useEffect(() => {
-    if (fetcher.data?.error) {
-      shopify.toast.show(fetcher.data.error, { isError: true });
-    } else if (fetcher.data?.success) {
-      shopify.toast.show("Tattoo design generated successfully!");
-    }
-  }, [fetcher.data, shopify]);
+  const handleGenerate = async () => {
+    if (!prompt) return;
 
-  const handleFileSelect = (files: FileList | null) => {
-    if (!files) return;
+    const formData = new FormData();
+    formData.append("prompt", prompt);
+    formData.append("style", selectedStyle);
 
-    const validFiles: File[] = [];
-    const previews: string[] = [];
-
-    Array.from(files).forEach((file) => {
-      if (file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024) {
-        if (uploadedImages.length + validFiles.length < 2) {
-          validFiles.push(file);
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            if (e.target?.result) {
-              previews.push(e.target.result as string);
-              if (previews.length === validFiles.length) {
-                setImagePreviews((prev) => [...prev, ...previews]);
-              }
-            }
-          };
-          reader.readAsDataURL(file);
-        }
-      }
-    });
-
-    setUploadedImages((prev) => [...prev, ...validFiles]);
-    setShowDesignChoicesModal(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    handleFileSelect(e.dataTransfer.files);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const removeImage = (index: number) => {
-    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+    submit(formData, { method: "post" });
   };
 
   const handleSurpriseMe = () => {
@@ -188,384 +95,105 @@ export default function TattooGenerator() {
     setPrompt(randomPrompt);
   };
 
-  const handleGenerate = () => {
-    if (!prompt.trim()) {
-      shopify.toast.show("Please enter a description", { isError: true });
-      return;
+  const handleDropZoneDrop = useCallback(
+    (_dropFiles: File[], acceptedFiles: File[], _rejectedFiles: File[]) => {
+      setUploadedImage(acceptedFiles[0]);
+    },
+    [],
+  );
+
+  const handleDownload = async (imageUrl: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `tattoo-design-${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
     }
-
-    submittingPromptRef.current = prompt;
-    submittingStyleRef.current = selectedStyle;
-
-    const formData = new FormData();
-    formData.append("prompt", prompt);
-    formData.append("style", selectedStyle);
-    uploadedImages.forEach((image) => {
-      formData.append("images", image);
-    });
-
-    fetcher.submit(formData, {
-      method: "POST",
-      action: "/api/generate-tattoo",
-      encType: "multipart/form-data",
-    });
+  };
+  
+  const handleRemoveImage = () => {
+      setUploadedImage(null);
   };
 
-  const stylesList: TattooStyle[] = [
-    "No Style",
-    "Ghibli",
-    "Couple",
-    "Creepy",
-    "Egypt",
-    "Paganic",
-    "Flame Design",
-    "Chicano",
-    "Monospace Text",
-    "Geometric",
-    "Spiritual",
-    "Dotwork",
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans text-gray-900">
-      <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="p-6 md:p-10 flex flex-col gap-8">
-          {/* Header */}
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
-              AI Tattoo Generator
-            </h1>
-            <p className="text-gray-500 text-lg">
-              Turn your ideas into unique tattoo designs in seconds
-            </p>
-          </div>
+    <Page fullWidth>
+      <Layout>
+        <Layout.Section>
+          <Card>
+            <BlockStack gap="500">
+              <Header />
 
-          {/* Control Panel */}
-          <div className={`${styles.panel} rounded-xl sm:rounded-2xl`}>
-            <div className={`${styles.inner} rounded-xl sm:rounded-2xl`}>
-              <div className={`rounded-xl sm:rounded-2xl p-0 sm:p-4  border border-gray-100 shadow-sm bg-white`}>
-                {/* Text Input with Surprise Me Button */}
-                <div className="relative w-full flex">
-                  <textarea
-                    className={`w-full min-h-[140px] p-5 ${imagePreviews.length > 0 ? 'pt-14' : 'pt-5'} rounded-xl bg-gray-100 text-gray-900 ring-0 ring-inset placeholder:text-gray-400 focus:ring focus:ring-inset focus:ring-indigo-400 sm:text-base leading-relaxed resize-none outline-none transition-shadow`}
-                    placeholder="Describe your dream tattoo in detail... (e.g., 'A minimalist line art wolf howling at the moon with geometric shapes')"
-                    value={prompt}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (value.length <= 500) {
-                        setPrompt(value);
-                      }
-                    }}
-                    rows={4}
-                    maxLength={500}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {/* Left Column - Inputs */}
+                <div className="lg:col-span-4 space-y-6">
+                  <PromptInput
+                    prompt={prompt}
+                    setPrompt={setPrompt}
+                    handleSurpriseMe={handleSurpriseMe}
+                    uploadedImage={uploadedImage}
+                    handleRemoveImage={handleRemoveImage}
+                    setShowDesignChoicesModal={setShowDesignChoicesModal}
                   />
-                  
-                  {imagePreviews.length > 0 && (
-                    <div className="absolute top-3 left-5 flex gap-2 z-10">
-                      {imagePreviews.map((preview, index) => (
-                        <div key={index} className="relative w-10 h-10 rounded-md overflow-hidden border border-gray-200 group bg-white">
-                          <img src={preview} alt="Upload" className="w-full h-full object-cover" />
-                          <button
-                            type="button"
-                            onClick={(e) => { e.stopPropagation(); removeImage(index); }}
-                            className="absolute top-0 right-0 bg-black/60 text-white p-0.5 rounded-bl-md opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <CloseIcon width="10" height="10" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
 
-                  <div className="absolute bottom-3 px-3 flex items-center gap-2 w-full justify-between flex-nowrap">
-                    <div>
-                      <button
-                        className="inline-flex sm:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-300 text-xs font-semibold transition-colors"
-                        onClick={() => setShowDesignChoicesModal(true)}
-                        type="button"
-                        title="Surprise me!"
-                      >
-                        <UploadIcon width="12" height="12" />
-                        <span>Upload</span>
-                      </button>
-                    </div>
-                    <div className="flex flex-nowrap items-center justify-between gap-[inherit]">
-                      <span className="text-xs text-gray-400 font-medium">
-                        {prompt.length}/∞
-                      </span>
-                      <button
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-300 text-xs font-semibold transition-colors"
-                        onClick={handleSurpriseMe}
-                        type="button"
-                        title="Surprise me!"
-                      >
-                        <SparkleIcon width="14" height="14" />
-                        <span className="hidden sm:inline">Surprise Me</span>
-                      </button>
-                    </div>
-                  </div>
+                  <StyleSelector
+                    selectedStyle={selectedStyle}
+                    setSelectedStyle={setSelectedStyle}
+                  />
+
+                  <ActionButtons
+                    handleGenerate={handleGenerate}
+                    isLoading={isLoading}
+                    prompt={prompt}
+                    setShowDesignChoicesModal={setShowDesignChoicesModal}
+                  />
                 </div>
-              </div>
-            </div>
-          </div>
-          {/* Style Selection Panel */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Select Style</h3>
-              <span className="text-sm text-gray-500">{selectedStyle}</span>
-            </div>
-            <div className="grid auto-cols-auto grid-flow-row gap-3 p-1" style={{ grid: "auto / auto-flow max-content", overflow: "auto" }}>
-              {stylesList.map((style) => {
-                const isPro = ["Ghibli", "Couple", "Creepy", "Dotwork"].includes(style);
-                const isSelected = selectedStyle === style;
-                return (
-                  <button
-                    key={style}
-                    className={`group relative flex flex-col items-center justify-center rounded-sm transition-all cursor-pointer aspect-square gap-2 ${isSelected
-                      ? ""
-                      : "bg-white"
-                      }`}
-                    onClick={() => setSelectedStyle(style)}
-                    type="button"
-                  >
-                    {isPro && (
-                      <div className="absolute top-1 left-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full shadow-sm z-10">
-                        <span>PRO</span>
-                      </div>
-                    )}
-                    <div className={`rounded-full overflow-hidden w-16 h-16 flex items-center justify-center transition-all ${isSelected ? 'ring-2 ring-stone-500 shadow-md' : 'bg-gray-100 group-hover:shadow-md'}`}>
-                      {style === "No Style" ? (
-                        <div className={`p-2 rounded-full transition-colors ${isSelected ? 'bg-stone-100 text-stone-600' : 'bg-gray-100 text-gray-500 group-hover:bg-white group-hover:text-indigo-500'}`}>
-                          <SparkleIcon width="24" height="24" />
-                        </div>
-                      ) : (
-                        <img
-                          src={styleImages[style]}
-                          alt={style}
-                          className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
-                        />
-                      )}
-                      {isSelected && (
-                        <div className="absolute top-1 right-2 text-white bg-black rounded-full p-0.5 shadow-sm z-10">
-                          <CheckIcon width="12" height="12" />
-                        </div>
-                      )}
-                    </div>
-                    <span className={`text-xs text-center ${isSelected ? 'text-indigo-900 font-medium' : 'text-gray-600'}`}>{style}</span>
 
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Actions Row */}
-          <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-between items-center">
-            <div className="flex gap-3 w-full sm:w-auto">
-              <button
-                className=" hidden sm:inline-flex relative w-full sm:w-fit bg-gray-100 hover:bg-gray-200 text-black rounded-full border-2 border-solid border-gray-300 cursor-pointer transition-all duration-0 flex items-center justify-center gap-2 px-4 py-3"
-                onClick={() => setShowDesignChoicesModal(true)}
-                type="button"
-              >
-                <UploadIcon width="18" height="18" />
-                <span>Upload Reference</span>
-              </button>
-            </div>
-            <button
-              className="w-full sm:w-3/5 flex items-center justify-center gap-2 bg-black text-white hover:bg-gray-800 hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100 transition-all shadow-md font-medium relative rounded-full px-4 py-3 cursor-pointer"
-              onClick={handleGenerate}
-              disabled={isLoading || !prompt.trim()}
-              type="button"
-            >
-              {isLoading ? (
-                <>
-                  <LoadingIcon className="animate-spin h-5 w-5 text-white" />
-                  <span>Generating...</span>
-                </>
-              ) : (
-                <>
-                  <span>Generate Tattoo</span>
-                  <GeneratorIcon width="20" height="20" />
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-
-
-
-
-        {/* Result Area */}
-        {historyImages.length > 0 && (
-          <div className="border-t border-gray-100 bg-gray-50 p-8 flex flex-col items-center w-full">
-            <h3 className="text-xl font-bold mb-6 text-gray-900">Your Generated Designs</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-6xl">
-              {historyImages.map((img) => (
-                <div key={img.id} className="relative group bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden flex flex-col">
-                  <div 
-                    className="aspect-square w-full overflow-hidden bg-gray-100 relative cursor-pointer"
-                    onClick={() => setPreviewImage(img.url)}
-                  >
-                    <img
-                      src={img.url}
-                      alt={`Tattoo ${img.prompt}`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                {/* Right Column - Results */}
+                <div className="lg:col-span-8">
+                  {generatedImages.length > 0 ? (
+                    <ResultGrid
+                      generatedImages={generatedImages}
+                      setPreviewImage={setPreviewImage}
+                      handleDownload={handleDownload}
                     />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                    
-                    <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setPreviewImage(img.url);
-                        }}
-                        className="bg-white text-gray-800 p-2 rounded-full shadow-lg hover:scale-110 hover:bg-gray-50 transition-all duration-200"
-                        title="Preview"
-                      >
-                        <EyeIcon width="20" height="20" />
-                      </button>
-                      
-                      <a
-                        href={img.url}
-                        download={`tattoo-${img.id}.png`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="bg-white text-gray-800 p-2 rounded-full shadow-lg hover:scale-110 hover:bg-gray-50 transition-all duration-200"
-                        title="Download"
-                      >
-                        <DownloadIcon width="20" height="20" />
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="p-4 flex flex-col gap-2">
-                    <div className="flex justify-between items-start">
-                      <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-full text-gray-600">
-                        {img.style || "No Style"}
-                      </span>
-                      <span className="text-xs text-gray-400">
-                        {new Date(img.timestamp).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-800 line-clamp-2 font-medium" title={img.prompt}>
-                      {img.prompt || "No description"}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Image Preview Modal */}
-        {previewImage && (
-          <div 
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
-            onClick={() => setPreviewImage(null)}
-          >
-            <div className="relative max-w-4xl max-h-[90vh] w-full flex items-center justify-center">
-              <button
-                className="absolute -top-12 right-0 text-white/70 hover:text-white p-2 transition-colors"
-                onClick={() => setPreviewImage(null)}
-              >
-                <CloseIcon width="32" height="32" />
-              </button>
-              <img 
-                src={previewImage} 
-                alt="Preview" 
-                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
-                onClick={(e) => e.stopPropagation()} 
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Design Choices Modal */}
-        {showDesignChoicesModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowDesignChoicesModal(false)}>
-            <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between p-4 border-b border-gray-100">
-                <h3 className="font-semibold text-gray-900">Upload Reference Images</h3>
-                <button
-                  className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors"
-                  onClick={() => setShowDesignChoicesModal(false)}
-                  type="button"
-                >
-                  <CloseIcon width="20" height="20" />
-                </button>
-              </div>
-              <div className="p-6">
-                <div
-                  className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${isDragging
-                    ? "border-indigo-500 bg-indigo-50"
-                    : "border-gray-300 hover:border-indigo-400 hover:bg-gray-50"
-                    }`}
-                  onDrop={handleDrop}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                    onChange={(e) => handleFileSelect(e.target.files)}
-                  />
-                  {imagePreviews.length === 0 ? (
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="p-3 bg-indigo-50 rounded-full text-indigo-600">
-                        <UploadIcon width="32" height="32" />
-                      </div>
-                      <div>
-                        <p className="text-gray-900 font-medium">Click to upload or drag & drop</p>
-                        <p className="text-gray-500 text-sm mt-1">Max 2 images, 5MB each</p>
-                      </div>
-                    </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-4">
-                      {imagePreviews.map((preview, index) => (
-                        <div key={index} className="relative group aspect-square rounded-lg overflow-hidden bg-gray-100">
-                          <img
-                            src={preview}
-                            alt={`Preview ${index + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                          <button
-                            className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/70"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeImage(index);
-                            }}
-                            type="button"
-                          >
-                            <CloseIcon width="16" height="16" />
-                          </button>
-                        </div>
-                      ))}
-                      {uploadedImages.length < 2 && (
-                        <div
-                          className="aspect-square rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            fileInputRef.current?.click();
-                          }}
-                        >
-                          <PlusIcon width="24" height="24" />
-                        </div>
-                      )}
+                    <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-gray-400 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                      <div className="w-16 h-16 mb-4 opacity-20">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                          <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <p>Generated tattoo designs will appear here</p>
                     </div>
                   )}
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+            </BlockStack>
+          </Card>
+        </Layout.Section>
+      </Layout>
+
+      <ImagePreviewModal
+        previewImage={previewImage}
+        setPreviewImage={setPreviewImage}
+        handleDownload={handleDownload}
+      />
+
+      <UploadModal
+        showDesignChoicesModal={showDesignChoicesModal}
+        setShowDesignChoicesModal={setShowDesignChoicesModal}
+        uploadedImage={uploadedImage}
+        handleDropZoneDrop={handleDropZoneDrop}
+        setUploadedImage={setUploadedImage}
+      />
+    </Page>
   );
 }
-
-export const headers: HeadersFunction = (headersArgs) => {
-  return boundary.headers(headersArgs);
-};
