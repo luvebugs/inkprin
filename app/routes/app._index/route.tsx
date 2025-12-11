@@ -4,6 +4,7 @@ import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
 import { Page, Layout, Card, BlockStack } from "@shopify/polaris";
 import { authenticate } from "../../shopify.server";
 import { saveImageToDB, getAllImagesFromDB } from "../../utils/indexedDB";
+import styles from './styles.module.css'
 
 // Components
 import { Header } from "./components/Header";
@@ -13,6 +14,8 @@ import { ActionButtons } from "./components/ActionButtons";
 import { ResultGrid } from "./components/ResultGrid";
 import { ImagePreviewModal } from "./components/ImagePreviewModal";
 import { UploadModal } from "./components/UploadModal";
+
+import { ChatInterface } from "./components/Chat/ChatInterface";
 
 // Types and Constants
 import { TattooStyle } from "./types";
@@ -72,7 +75,7 @@ export default function TattooGenerator() {
   useEffect(() => {
     if (actionData?.status === "success" && actionData.images) {
       setGeneratedImages(actionData.images);
-      
+
       // Save to IndexedDB
       actionData.images.forEach((url: string) => {
         saveImageToDB(url, prompt, selectedStyle);
@@ -80,12 +83,19 @@ export default function TattooGenerator() {
     }
   }, [actionData, prompt, selectedStyle]);
 
-  const handleGenerate = async () => {
-    if (!prompt) return;
+  const handleGenerate = async (promptText?: string, styleName?: TattooStyle) => {
+    const textToUse = promptText || prompt;
+    const styleToUse = styleName || selectedStyle;
+
+    if (!textToUse) return;
+
+    // Update state to ensure correct saving to DB
+    setPrompt(textToUse);
+    if (styleToUse) setSelectedStyle(styleToUse);
 
     const formData = new FormData();
-    formData.append("prompt", prompt);
-    formData.append("style", selectedStyle);
+    formData.append("prompt", textToUse);
+    formData.append("style", styleToUse || "No Style");
 
     submit(formData, { method: "post" });
   };
@@ -118,9 +128,9 @@ export default function TattooGenerator() {
       console.error('Download failed:', error);
     }
   };
-  
+
   const handleRemoveImage = () => {
-      setUploadedImage(null);
+    setUploadedImage(null);
   };
 
   return (
@@ -134,13 +144,15 @@ export default function TattooGenerator() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Left Column - Inputs */}
                 <div className="lg:col-span-4 space-y-6">
-                  <PromptInput
-                    prompt={prompt}
-                    setPrompt={setPrompt}
-                    handleSurpriseMe={handleSurpriseMe}
+                  <ChatInterface
+                    onGenerate={handleGenerate}
+                    isLoading={isLoading}
+                    generatedImages={generatedImages}
+                    onDownload={handleDownload}
+                    onImageClick={setPreviewImage}
+                    onUploadClick={() => setShowDesignChoicesModal(true)}
                     uploadedImage={uploadedImage}
-                    handleRemoveImage={handleRemoveImage}
-                    setShowDesignChoicesModal={setShowDesignChoicesModal}
+                    onRemoveImage={handleRemoveImage}
                   />
 
                   <StyleSelector

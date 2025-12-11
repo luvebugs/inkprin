@@ -11,9 +11,9 @@ import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prism
 import { PrismaClient } from "@prisma/client";
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
 import * as React from "react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { AppProvider as AppProvider$1, Modal, DropZone, LegacyStack, Thumbnail, Text, Page, Layout, Card, BlockStack } from "@shopify/polaris";
-import { NoteIcon } from "@shopify/polaris-icons";
+import { NoteIcon, PersonIcon, MagicIcon, XIcon } from "@shopify/polaris-icons";
 if (process.env.NODE_ENV !== "production") {
   if (!global.prismaGlobal) {
     global.prismaGlobal = new PrismaClient();
@@ -596,91 +596,6 @@ function Header() {
   ] });
 }
 const SvgSparkle = (props) => /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" }));
-const SvgUpload = (props) => /* @__PURE__ */ React.createElement("svg", { width: 21, height: 21, viewBox: "0 0 21 20", fill: "none", stroke: "currentColor", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M6.5 2H8.5C9.03125 2 9.5 2.46875 9.5 3V6H5.5V3C5.5 2.46875 5.9375 2 6.5 2ZM2.5 10C2.5 8.34375 3.84375 7 5.5 7H9.5C11.1562 7 12.5 8.34375 12.5 10V16.5C12.5 17.3438 11.8125 18 11 18H4C3.15625 18 2.5 17.3438 2.5 16.5V10ZM10 12.5C10 11.625 9.5 10.8125 8.75 10.3438C7.96875 9.90625 7 9.90625 6.25 10.3438C5.46875 10.8125 5 11.625 5 12.5C5 13.4062 5.46875 14.2188 6.25 14.6875C7 15.125 7.96875 15.125 8.75 14.6875C9.5 14.2188 10 13.4062 10 12.5ZM10.5 4C10.5 3.46875 10.9375 3 11.5 3C12.0312 3 12.5 3.46875 12.5 4C12.5 4.5625 12.0312 5 11.5 5C10.9375 5 10.5 4.5625 10.5 4ZM14.5 3C15.0312 3 15.5 3.46875 15.5 4C15.5 4.5625 15.0312 5 14.5 5C13.9375 5 13.5 4.5625 13.5 4C13.5 3.46875 13.9375 3 14.5 3ZM16.5 4C16.5 3.46875 16.9375 3 17.5 3C18.0312 3 18.5 3.46875 18.5 4C18.5 4.5625 18.0312 5 17.5 5C16.9375 5 16.5 4.5625 16.5 4ZM17.5 6C18.0312 6 18.5 6.46875 18.5 7C18.5 7.5625 18.0312 8 17.5 8C16.9375 8 16.5 7.5625 16.5 7C16.5 6.46875 16.9375 6 17.5 6ZM16.5 10C16.5 9.46875 16.9375 9 17.5 9C18.0312 9 18.5 9.46875 18.5 10C18.5 10.5625 18.0312 11 17.5 11C16.9375 11 16.5 10.5625 16.5 10ZM14.5 6C15.0312 6 15.5 6.46875 15.5 7C15.5 7.5625 15.0312 8 14.5 8C13.9375 8 13.5 7.5625 13.5 7C13.5 6.46875 13.9375 6 14.5 6Z" }));
-const SvgClose = (props) => /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("line", { x1: 18, y1: 6, x2: 6, y2: 18 }), /* @__PURE__ */ React.createElement("line", { x1: 6, y1: 6, x2: 18, y2: 18 }));
-const inner = "_inner_hzxps_11";
-const panel = "_panel_hzxps_18";
-const styles = {
-  inner,
-  panel
-};
-function PromptInput({
-  prompt,
-  setPrompt,
-  handleSurpriseMe,
-  uploadedImage,
-  handleRemoveImage,
-  setShowDesignChoicesModal
-}) {
-  const imageUrl = uploadedImage ? window.URL.createObjectURL(uploadedImage) : null;
-  return /* @__PURE__ */ jsx("div", { className: `${styles.panel} rounded-xl sm:rounded-2xl`, children: /* @__PURE__ */ jsx("div", { className: `${styles.inner} rounded-xl sm:rounded-2xl`, children: /* @__PURE__ */ jsx("div", { className: `rounded-xl sm:rounded-2xl p-0 sm:p-4  border border-gray-100 shadow-sm bg-white`, children: /* @__PURE__ */ jsxs("div", { className: "relative w-full flex", children: [
-    /* @__PURE__ */ jsx(
-      "textarea",
-      {
-        className: `w-full min-h-[140px] p-5 ${uploadedImage ? "pt-14" : "pt-5"} rounded-xl bg-gray-100 text-gray-900 ring-0 ring-inset placeholder:text-gray-400 focus:ring focus:ring-inset focus:ring-indigo-400 sm:text-base leading-relaxed resize-none outline-none transition-shadow`,
-        placeholder: "Describe your dream tattoo in detail... (e.g., 'A minimalist line art wolf howling at the moon with geometric shapes')",
-        value: prompt,
-        onChange: (e) => {
-          const value = e.target.value;
-          if (value.length <= 500) {
-            setPrompt(value);
-          }
-        },
-        rows: 4,
-        maxLength: 500
-      }
-    ),
-    uploadedImage && imageUrl && /* @__PURE__ */ jsx("div", { className: "absolute top-3 left-5 flex gap-2 z-10", children: /* @__PURE__ */ jsxs("div", { className: "relative w-10 h-10 rounded-md overflow-hidden border border-gray-200 group bg-white", children: [
-      /* @__PURE__ */ jsx("img", { src: imageUrl, alt: "Upload", className: "w-full h-full object-cover" }),
-      /* @__PURE__ */ jsx(
-        "button",
-        {
-          type: "button",
-          onClick: (e) => {
-            e.stopPropagation();
-            handleRemoveImage();
-          },
-          className: "absolute top-0 right-0 bg-black/60 text-white p-0.5 rounded-bl-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-5 h-5",
-          children: /* @__PURE__ */ jsx(SvgClose, { width: "10", height: "10" })
-        }
-      )
-    ] }) }),
-    /* @__PURE__ */ jsxs("div", { className: "absolute bottom-3 px-3 flex items-center gap-2 w-full justify-between flex-nowrap", children: [
-      /* @__PURE__ */ jsx("div", { children: setShowDesignChoicesModal && /* @__PURE__ */ jsxs(
-        "button",
-        {
-          className: "inline-flex sm:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-300 text-xs font-semibold transition-colors",
-          onClick: () => setShowDesignChoicesModal(true),
-          type: "button",
-          title: "Upload Reference",
-          children: [
-            /* @__PURE__ */ jsx(SvgUpload, { width: "12", height: "12" }),
-            /* @__PURE__ */ jsx("span", { children: "Upload" })
-          ]
-        }
-      ) }),
-      /* @__PURE__ */ jsxs("div", { className: "flex flex-nowrap items-center justify-between gap-[inherit]", children: [
-        /* @__PURE__ */ jsxs("span", { className: "text-xs text-gray-400 font-medium", children: [
-          prompt.length,
-          "/∞"
-        ] }),
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            className: "flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-300 text-xs font-semibold transition-colors",
-            onClick: handleSurpriseMe,
-            type: "button",
-            title: "Surprise me!",
-            children: [
-              /* @__PURE__ */ jsx(SvgSparkle, { width: "14", height: "14" }),
-              /* @__PURE__ */ jsx("span", { className: "hidden sm:inline", children: "Surprise Me" })
-            ]
-          }
-        )
-      ] })
-    ] })
-  ] }) }) }) });
-}
 const SvgCheck = (props) => /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 3, xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("polyline", { points: "20 6 9 17 4 12" }));
 const example1 = "/assets/example1-C-PyYQ2b.webp";
 const example2 = "/assets/example2-C3foLocx.webp";
@@ -766,6 +681,7 @@ function StyleSelector({ selectedStyle, setSelectedStyle }) {
     }) })
   ] });
 }
+const SvgUpload = (props) => /* @__PURE__ */ React.createElement("svg", { width: 21, height: 21, viewBox: "0 0 21 20", fill: "none", stroke: "currentColor", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M6.5 2H8.5C9.03125 2 9.5 2.46875 9.5 3V6H5.5V3C5.5 2.46875 5.9375 2 6.5 2ZM2.5 10C2.5 8.34375 3.84375 7 5.5 7H9.5C11.1562 7 12.5 8.34375 12.5 10V16.5C12.5 17.3438 11.8125 18 11 18H4C3.15625 18 2.5 17.3438 2.5 16.5V10ZM10 12.5C10 11.625 9.5 10.8125 8.75 10.3438C7.96875 9.90625 7 9.90625 6.25 10.3438C5.46875 10.8125 5 11.625 5 12.5C5 13.4062 5.46875 14.2188 6.25 14.6875C7 15.125 7.96875 15.125 8.75 14.6875C9.5 14.2188 10 13.4062 10 12.5ZM10.5 4C10.5 3.46875 10.9375 3 11.5 3C12.0312 3 12.5 3.46875 12.5 4C12.5 4.5625 12.0312 5 11.5 5C10.9375 5 10.5 4.5625 10.5 4ZM14.5 3C15.0312 3 15.5 3.46875 15.5 4C15.5 4.5625 15.0312 5 14.5 5C13.9375 5 13.5 4.5625 13.5 4C13.5 3.46875 13.9375 3 14.5 3ZM16.5 4C16.5 3.46875 16.9375 3 17.5 3C18.0312 3 18.5 3.46875 18.5 4C18.5 4.5625 18.0312 5 17.5 5C16.9375 5 16.5 4.5625 16.5 4ZM17.5 6C18.0312 6 18.5 6.46875 18.5 7C18.5 7.5625 18.0312 8 17.5 8C16.9375 8 16.5 7.5625 16.5 7C16.5 6.46875 16.9375 6 17.5 6ZM16.5 10C16.5 9.46875 16.9375 9 17.5 9C18.0312 9 18.5 9.46875 18.5 10C18.5 10.5625 18.0312 11 17.5 11C16.9375 11 16.5 10.5625 16.5 10ZM14.5 6C15.0312 6 15.5 6.46875 15.5 7C15.5 7.5625 15.0312 8 14.5 8C13.9375 8 13.5 7.5625 13.5 7C13.5 6.46875 13.9375 6 14.5 6Z" }));
 const SvgLoading = (props) => /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", ...props }, /* @__PURE__ */ React.createElement("circle", { className: "opacity-25", cx: 12, cy: 12, r: 10, stroke: "currentColor", strokeWidth: 4 }), /* @__PURE__ */ React.createElement("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" }));
 const SvgGenerator = (props) => /* @__PURE__ */ React.createElement("svg", { width: 35, height: 35, viewBox: "0 0 33 33", fill: "none", xmlns: "http://www.w3.org/2000/svg", className: "absolute right-4", ...props }, /* @__PURE__ */ React.createElement("rect", { x: 0.5, y: 0.5, width: 32, height: 32, rx: 16, fill: "white" }), /* @__PURE__ */ React.createElement("path", { d: "M17.1562 9.9375L19.0312 13.9688L23.0625 15.8438C23.3125 15.9688 23.5 16.2188 23.5 16.5C23.5 16.8125 23.3125 17.0625 23.0625 17.1875L19.0312 19.0625L17.1562 23.0938C17.0312 23.3438 16.7812 23.5 16.5 23.5C16.1875 23.5 15.9375 23.3438 15.8125 23.0938L13.9375 19.0625L9.90625 17.1875C9.65625 17.0625 9.5 16.8125 9.5 16.5C9.5 16.2188 9.65625 15.9688 9.90625 15.8438L13.9375 13.9688L15.8125 9.9375C15.9375 9.6875 16.1875 9.5 16.5 9.5C16.7812 9.5 17.0312 9.6875 17.1562 9.9375Z", fill: "black" }));
 function ActionButtons({
@@ -940,6 +856,382 @@ function UploadModal({
     }
   );
 }
+function ChatBubble({ role, content: content2, images, onDownload, onImageClick }) {
+  const isUser = role === "user";
+  const handleKeyDown = (e, action2) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      action2();
+    }
+  };
+  return /* @__PURE__ */ jsx("div", { className: `flex w-full ${isUser ? "justify-end" : "justify-start"} mb-4`, children: /* @__PURE__ */ jsxs("div", { className: `flex max-w-[80%] ${isUser ? "flex-row-reverse" : "flex-row"} gap-3`, children: [
+    /* @__PURE__ */ jsx("div", { className: "flex-shrink-0", children: /* @__PURE__ */ jsx("div", { className: `w-8 h-8 rounded-full flex items-center justify-center ${isUser ? "bg-indigo-100 text-indigo-600" : "bg-emerald-100 text-emerald-600"}`, children: isUser ? /* @__PURE__ */ jsx(PersonIcon, { className: "w-5 h-5" }) : /* @__PURE__ */ jsx(MagicIcon, { className: "w-5 h-5" }) }) }),
+    /* @__PURE__ */ jsxs("div", { className: `flex flex-col ${isUser ? "items-end" : "items-start"}`, children: [
+      /* @__PURE__ */ jsx("div", { className: `p-3 rounded-2xl ${isUser ? "bg-indigo-600 text-white rounded-tr-sm" : "bg-white border border-gray-200 text-gray-800 rounded-tl-sm shadow-sm"}`, children: /* @__PURE__ */ jsx("div", { className: "text-sm md:text-base whitespace-pre-wrap leading-relaxed", children: content2 }) }),
+      images && images.length > 0 && /* @__PURE__ */ jsx("div", { className: "mt-3 grid grid-cols-2 gap-2 w-full max-w-md", children: images.map((img, index2) => /* @__PURE__ */ jsxs("div", { className: "relative group aspect-square rounded-lg overflow-hidden border border-gray-200", children: [
+        /* @__PURE__ */ jsx(
+          "div",
+          {
+            role: "button",
+            tabIndex: 0,
+            "aria-label": `View generated tattoo ${index2 + 1}`,
+            className: "w-full h-full cursor-pointer",
+            onClick: () => onImageClick == null ? void 0 : onImageClick(img),
+            onKeyDown: (e) => onImageClick && handleKeyDown(e, () => onImageClick(img)),
+            children: /* @__PURE__ */ jsx(
+              "img",
+              {
+                src: img,
+                alt: `Generated tattoo ${index2 + 1}`,
+                className: "w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              }
+            )
+          }
+        ),
+        onDownload && /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: (e) => {
+              e.stopPropagation();
+              onDownload(img);
+            },
+            onKeyDown: (e) => {
+              e.stopPropagation();
+              handleKeyDown(e, () => onDownload(img));
+            },
+            className: "absolute bottom-2 right-2 p-1.5 bg-white/90 rounded-full shadow-sm hover:bg-white text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity",
+            title: "Download",
+            "aria-label": `Download generated tattoo ${index2 + 1}`,
+            children: /* @__PURE__ */ jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "16", height: "16", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
+              /* @__PURE__ */ jsx("path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" }),
+              /* @__PURE__ */ jsx("polyline", { points: "7 10 12 15 17 10" }),
+              /* @__PURE__ */ jsx("line", { x1: "12", y1: "15", x2: "12", y2: "3" })
+            ] })
+          }
+        )
+      ] }, index2)) })
+    ] })
+  ] }) });
+}
+const SvgSendMessage = (props) => /* @__PURE__ */ React.createElement("svg", { width: 21, height: 21, viewBox: "0 0 21 20", fill: "currentColor", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M12.7188 4.6875L14.5 4L15.1562 2.25C15.1875 2.09375 15.3438 2 15.5 2C15.625 2 15.7812 2.09375 15.8125 2.25L16.5 4L18.25 4.6875C18.4062 4.71875 18.5 4.875 18.5 5C18.5 5.15625 18.4062 5.3125 18.25 5.34375L16.5 6L15.8125 7.78125C15.7812 7.90625 15.625 8 15.5 8C15.3438 8 15.1875 7.90625 15.1562 7.78125L14.5 6L12.7188 5.34375C12.5938 5.3125 12.5 5.15625 12.5 5C12.5 4.875 12.5938 4.71875 12.7188 4.6875ZM8.90625 4.3125L10.5312 7.875L14.0938 9.5C14.2812 9.59375 14.4062 9.78125 14.4062 9.96875C14.4062 10.1562 14.2812 10.3438 14.0938 10.4062L10.5312 12.0625L8.90625 15.625C8.8125 15.8125 8.625 15.9375 8.4375 15.9375C8.25 15.9375 8.0625 15.8125 8 15.625L6.34375 12.0625L2.78125 10.4375C2.59375 10.3438 2.5 10.1562 2.5 9.96875C2.5 9.78125 2.59375 9.59375 2.78125 9.5L6.34375 7.875L8 4.3125C8.0625 4.125 8.25 4 8.4375 4C8.625 4 8.8125 4.125 8.90625 4.3125ZM14.5 14L15.1562 12.25C15.1875 12.0938 15.3438 12 15.5 12C15.625 12 15.7812 12.0938 15.8125 12.25L16.5 14L18.25 14.6875C18.4062 14.7188 18.5 14.875 18.5 15C18.5 15.1562 18.4062 15.3125 18.25 15.3438L16.5 16L15.8125 17.7812C15.7812 17.9062 15.625 18 15.5 18C15.3438 18 15.1875 17.9062 15.1562 17.7812L14.5 16L12.7188 15.3438C12.5938 15.3125 12.5 15.1562 12.5 15C12.5 14.875 12.5938 14.7188 12.7188 14.6875L14.5 14Z" }));
+const SvgClose = (props) => /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("line", { x1: 18, y1: 6, x2: 6, y2: 18 }), /* @__PURE__ */ React.createElement("line", { x1: 6, y1: 6, x2: 18, y2: 18 }));
+const inner = "_inner_hzxps_11";
+const panel = "_panel_hzxps_18";
+const styles = {
+  inner,
+  panel
+};
+function PromptInput({
+  prompt,
+  setPrompt,
+  onSurpriseMe,
+  uploadedImage,
+  handleRemoveImage,
+  setShowDesignChoicesModal,
+  handleSend,
+  onUploadClick,
+  disabled = false,
+  placeholder = "Describe your dream tattoo in detail..."
+}) {
+  const imageUrl = uploadedImage ? window.URL.createObjectURL(uploadedImage) : null;
+  const textareaRef = useRef(null);
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+    }
+  }, [prompt]);
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend == null ? void 0 : handleSend();
+    }
+  };
+  return /* @__PURE__ */ jsx("div", { className: `${styles.panel} rounded-xl sm:rounded-2xl transition-all duration-200`, children: /* @__PURE__ */ jsx("div", { className: `${styles.inner} rounded-xl sm:rounded-2xl`, children: /* @__PURE__ */ jsx("div", { className: `rounded-xl sm:rounded-2xl p-0 sm:p-2 border border-gray-100 shadow-sm bg-white`, children: /* @__PURE__ */ jsxs("div", { className: "relative w-full flex flex-col", children: [
+    /* @__PURE__ */ jsx(
+      "textarea",
+      {
+        ref: textareaRef,
+        className: `${uploadedImage ? "pt-14" : "pt-5"} w-full min-h-[50px] max-h-[120px] p-3 pr-12 rounded-xl bg-transparent text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-base leading-relaxed resize-none custom-scrollbar`,
+        placeholder,
+        value: prompt,
+        onChange: (e) => {
+          const value = e.target.value;
+          if (value.length <= 500) {
+            setPrompt(value);
+          }
+        },
+        onKeyDown: handleKeyDown,
+        disabled,
+        rows: 1,
+        maxLength: 500,
+        "aria-label": "Tattoo prompt"
+      }
+    ),
+    uploadedImage && imageUrl && /* @__PURE__ */ jsx("div", { className: "absolute top-3 left-5 flex gap-2 z-10", children: /* @__PURE__ */ jsxs("div", { className: "relative w-10 h-10 rounded-md overflow-hidden border border-gray-200 group bg-white", children: [
+      /* @__PURE__ */ jsx("img", { src: imageUrl, alt: "Upload", className: "w-full h-full object-cover" }),
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          type: "button",
+          onClick: (e) => {
+            e.stopPropagation();
+            handleRemoveImage();
+          },
+          className: "absolute top-0 right-0 bg-black/60 text-white p-0.5 rounded-bl-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-5 h-5",
+          children: /* @__PURE__ */ jsx(SvgClose, { width: "10", height: "10" })
+        }
+      )
+    ] }) }),
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between px-2 pb-2 mt-1", children: [
+      /* @__PURE__ */ jsx("div", { className: "flex items-center gap-2", children: onUploadClick && /* @__PURE__ */ jsxs(
+        "button",
+        {
+          className: "flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-xs font-semibold transition-colors",
+          onClick: onUploadClick,
+          type: "button",
+          title: "Upload Reference",
+          disabled,
+          "aria-label": "Upload reference image",
+          children: [
+            /* @__PURE__ */ jsx(SvgUpload, { width: "20", height: "20" }),
+            /* @__PURE__ */ jsx("span", { children: "Upload" })
+          ]
+        }
+      ) }),
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+        /* @__PURE__ */ jsxs("span", { className: "text-xs text-gray-400 font-medium hidden sm:inline-block", children: [
+          prompt.length,
+          "/500"
+        ] }),
+        handleSend && (prompt.length > 0 ? /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            onClick: handleSend,
+            disabled: disabled || !prompt.trim(),
+            className: `p-2 rounded-full transition-all duration-200 ${prompt.trim() && !disabled ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm" : "bg-gray-100 text-gray-400 cursor-not-allowed"}`,
+            "aria-label": "Send prompt",
+            children: /* @__PURE__ */ jsx(SvgSendMessage, { width: "14", height: "14" })
+          }
+        ) : onSurpriseMe && /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-xs font-semibold transition-colors",
+            onClick: onSurpriseMe,
+            type: "button",
+            title: "Surprise me!",
+            disabled,
+            "aria-label": "Generate random prompt",
+            children: [
+              /* @__PURE__ */ jsx(SvgSparkle, { width: "14", height: "14" }),
+              /* @__PURE__ */ jsx("span", { className: "hidden sm:inline", children: "Surprise Me" })
+            ]
+          }
+        ))
+      ] })
+    ] })
+  ] }) }) }) });
+}
+function ChatInterface({
+  onGenerate,
+  isLoading,
+  generatedImages,
+  onDownload,
+  onImageClick,
+  onUploadClick,
+  uploadedImage,
+  onRemoveImage
+}) {
+  const [messages, setMessages] = useState([
+    {
+      id: "1",
+      role: "assistant",
+      content: "Hi! I'm your AI Tattoo Artist. Describe your tattoo idea, and I'll help you design it. What do you have in mind?",
+      type: "text"
+    }
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [currentPrompt, setCurrentPrompt] = useState("");
+  const [selectedStyle, setSelectedStyle] = useState(null);
+  const [step, setStep] = useState("prompt");
+  const messagesEndRef = useRef(null);
+  useEffect(() => {
+    var _a2;
+    (_a2 = messagesEndRef.current) == null ? void 0 : _a2.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading]);
+  useEffect(() => {
+    if (generatedImages.length > 0) {
+      addMessage({
+        role: "assistant",
+        content: "Here are some designs I created for you!",
+        type: "image_result",
+        images: generatedImages
+      });
+      setStep("generate");
+    }
+  }, [generatedImages]);
+  const addMessage = (msg) => {
+    setMessages((prev) => [...prev, { ...msg, id: Date.now().toString() }]);
+  };
+  const handleSend = () => {
+    if (!inputValue.trim() && !uploadedImage) return;
+    const userText = inputValue.trim();
+    setInputValue("");
+    let content2 = userText;
+    if (uploadedImage && !userText) content2 = "Uploaded an image for reference.";
+    addMessage({ role: "user", content: content2 });
+    if (step === "prompt") {
+      setCurrentPrompt(userText);
+      setStep("style");
+      setTimeout(() => {
+        addMessage({
+          role: "assistant",
+          content: "Great idea! Now, choose a style for your tattoo:",
+          type: "style_selection"
+        });
+      }, 600);
+    } else if (step === "generate") {
+      const newPrompt = currentPrompt ? `${currentPrompt}. ${userText}` : userText;
+      setCurrentPrompt(newPrompt);
+      setTimeout(() => {
+        addMessage({
+          role: "assistant",
+          content: `Updating the design with your feedback...`,
+          type: "text"
+        });
+        onGenerate(newPrompt, selectedStyle || "No Style");
+      }, 600);
+    }
+  };
+  const handleStyleSelect = (style) => {
+    const validStyle = style === "No Style" ? "No Style" : style;
+    setSelectedStyle(validStyle === "No Style" ? null : validStyle);
+    addMessage({ role: "user", content: `I'll go with ${style} style.` });
+    setStep("generate");
+    setTimeout(() => {
+      addMessage({
+        role: "assistant",
+        content: `Perfect! Creating a ${style} tattoo based on: "${currentPrompt}". This might take a moment...`,
+        type: "text"
+      });
+      onGenerate(currentPrompt, validStyle);
+    }, 600);
+  };
+  const handleSurpriseMe = () => {
+    const randomPrompt = surprisePrompts[Math.floor(Math.random() * surprisePrompts.length)];
+    setInputValue(randomPrompt);
+  };
+  const handleButtonKeyDown = (e, action2) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      action2 == null ? void 0 : action2();
+    }
+  };
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col h-[600px] w-full max-w-3xl mx-auto bg-gray-50 rounded-2xl shadow-lg overflow-hidden border border-gray-200", children: [
+    /* @__PURE__ */ jsxs(
+      "div",
+      {
+        className: "flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar",
+        role: "log",
+        "aria-label": "Chat history",
+        tabIndex: 0,
+        children: [
+          messages.map((msg) => /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsx(
+              ChatBubble,
+              {
+                role: msg.role,
+                content: msg.content,
+                images: msg.images,
+                onDownload,
+                onImageClick
+              }
+            ),
+            msg.type === "style_selection" && !selectedStyle && step === "style" && /* @__PURE__ */ jsxs("div", { className: "pl-11 grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 mb-4", children: [
+              stylesList.slice(0, 6).map((style) => /* @__PURE__ */ jsx(
+                "button",
+                {
+                  onClick: () => handleStyleSelect(style),
+                  onKeyDown: (e) => handleButtonKeyDown(e, () => handleStyleSelect(style)),
+                  className: "px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors text-left",
+                  "aria-label": `Select ${style} style`,
+                  tabIndex: 0,
+                  children: style
+                },
+                style
+              )),
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  onClick: () => handleStyleSelect("No Style"),
+                  onKeyDown: (e) => handleButtonKeyDown(e, () => handleStyleSelect("No Style")),
+                  className: "px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors text-left text-gray-500 italic",
+                  "aria-label": "Select random style",
+                  tabIndex: 0,
+                  children: "Surprise Me (Any Style)"
+                }
+              )
+            ] })
+          ] }, msg.id)),
+          isLoading && /* @__PURE__ */ jsx("div", { className: "flex w-full justify-start mb-4", children: /* @__PURE__ */ jsx("div", { className: "flex max-w-[80%] flex-row gap-3", children: /* @__PURE__ */ jsxs("div", { className: "w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center", children: [
+            /* @__PURE__ */ jsx("div", { className: "w-2 h-2 bg-emerald-500 rounded-full animate-bounce", style: { animationDelay: "0ms" } }),
+            /* @__PURE__ */ jsx("div", { className: "w-2 h-2 bg-emerald-500 rounded-full animate-bounce mx-0.5", style: { animationDelay: "150ms" } }),
+            /* @__PURE__ */ jsx("div", { className: "w-2 h-2 bg-emerald-500 rounded-full animate-bounce", style: { animationDelay: "300ms" } })
+          ] }) }) }),
+          /* @__PURE__ */ jsx("div", { ref: messagesEndRef })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsx("div", { className: "p-4 bg-white border-t border-gray-100", children: /* @__PURE__ */ jsxs("div", { className: "max-w-3xl mx-auto", children: [
+      uploadedImage && /* @__PURE__ */ jsxs("div", { className: "mb-2 inline-flex relative group", children: [
+        /* @__PURE__ */ jsx("div", { className: "w-16 h-16 rounded-lg overflow-hidden border border-gray-200", children: /* @__PURE__ */ jsx(
+          "img",
+          {
+            src: URL.createObjectURL(uploadedImage),
+            alt: "Upload preview",
+            className: "w-full h-full object-cover"
+          }
+        ) }),
+        onRemoveImage && /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: onRemoveImage,
+            onKeyDown: (e) => handleButtonKeyDown(e, onRemoveImage),
+            className: "absolute -top-2 -right-2 bg-white rounded-full p-0.5 shadow-md border border-gray-100 text-gray-500 hover:text-red-500 transition-colors",
+            "aria-label": "Remove uploaded image",
+            tabIndex: 0,
+            children: /* @__PURE__ */ jsx(XIcon, { className: "w-4 h-4" })
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsx(
+        PromptInput,
+        {
+          prompt: inputValue,
+          setPrompt: setInputValue,
+          handleSend,
+          onSurpriseMe: handleSurpriseMe,
+          disabled: isLoading || step === "style" && !selectedStyle,
+          onUploadClick: step === "prompt" ? onUploadClick : void 0,
+          placeholder: step === "style" ? "Select a style above..." : step === "generate" ? "Describe changes or adjustments..." : "Describe your dream tattoo..."
+        }
+      )
+    ] }) }),
+    /* @__PURE__ */ jsx("style", { children: `
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: #cbd5e1;
+          border-radius: 20px;
+        }
+      ` })
+  ] });
+}
 const loader = async ({
   request
 }) => {
@@ -992,18 +1284,18 @@ const route = UNSAFE_withComponentProps(function TattooGenerator() {
       });
     }
   }, [actionData, prompt, selectedStyle]);
-  const handleGenerate = async () => {
-    if (!prompt) return;
+  const handleGenerate = async (promptText, styleName) => {
+    const textToUse = promptText || prompt;
+    const styleToUse = styleName || selectedStyle;
+    if (!textToUse) return;
+    setPrompt(textToUse);
+    if (styleToUse) setSelectedStyle(styleToUse);
     const formData = new FormData();
-    formData.append("prompt", prompt);
-    formData.append("style", selectedStyle);
+    formData.append("prompt", textToUse);
+    formData.append("style", styleToUse || "No Style");
     submit(formData, {
       method: "post"
     });
-  };
-  const handleSurpriseMe = () => {
-    const randomPrompt = surprisePrompts[Math.floor(Math.random() * surprisePrompts.length)];
-    setPrompt(randomPrompt);
   };
   const handleDropZoneDrop = useCallback((_dropFiles, acceptedFiles, _rejectedFiles) => {
     setUploadedImage(acceptedFiles[0]);
@@ -1038,13 +1330,15 @@ const route = UNSAFE_withComponentProps(function TattooGenerator() {
               className: "grid grid-cols-1 lg:grid-cols-12 gap-8",
               children: [/* @__PURE__ */ jsxs("div", {
                 className: "lg:col-span-4 space-y-6",
-                children: [/* @__PURE__ */ jsx(PromptInput, {
-                  prompt,
-                  setPrompt,
-                  handleSurpriseMe,
+                children: [/* @__PURE__ */ jsx(ChatInterface, {
+                  onGenerate: handleGenerate,
+                  isLoading,
+                  generatedImages,
+                  onDownload: handleDownload,
+                  onImageClick: setPreviewImage,
+                  onUploadClick: () => setShowDesignChoicesModal(true),
                   uploadedImage,
-                  handleRemoveImage,
-                  setShowDesignChoicesModal
+                  onRemoveImage: handleRemoveImage
                 }), /* @__PURE__ */ jsx(StyleSelector, {
                   selectedStyle,
                   setSelectedStyle
@@ -1101,7 +1395,7 @@ const route9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   default: route,
   loader
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-CFeZ1GHa.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/index-Cs_PSIf1.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/root-CnkWKdMR.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/index-Cs_PSIf1.js"], "css": ["/assets/root-sMXxlqR_.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/webhooks.app.scopes_update": { "id": "routes/webhooks.app.scopes_update", "parentId": "root", "path": "webhooks/app/scopes_update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/webhooks.app.scopes_update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/webhooks.app.uninstalled": { "id": "routes/webhooks.app.uninstalled", "parentId": "root", "path": "webhooks/app/uninstalled", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/webhooks.app.uninstalled-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.generate-tattoo": { "id": "routes/api.generate-tattoo", "parentId": "root", "path": "api/generate-tattoo", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.generate-tattoo-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/auth.login": { "id": "routes/auth.login", "parentId": "root", "path": "auth/login", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-BIq5w9qC.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/AppProxyProvider-DgU0IEHk.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-Dw7iv-tJ.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js"], "css": ["/assets/route-Xpdx9QZl.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/auth.$": { "id": "routes/auth.$", "parentId": "root", "path": "auth/*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/auth._-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app": { "id": "routes/app", "parentId": "root", "path": "app", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/app-DmXa7knW.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/AppProxyProvider-DgU0IEHk.js", "/assets/context-DyICP9bL.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app.additional": { "id": "routes/app.additional", "parentId": "routes/app", "path": "additional", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/app.additional-BkplF5p6.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app._index": { "id": "routes/app._index", "parentId": "routes/app", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": true, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-Di16b8fK.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/context-DyICP9bL.js", "/assets/index-Cs_PSIf1.js"], "css": ["/assets/route-iaGCa6r1.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-cd491314.js", "version": "cd491314", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/assets/entry.client-CFeZ1GHa.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/index-Cs_PSIf1.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/root-DoUqzsAW.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/index-Cs_PSIf1.js"], "css": ["/assets/root-vetZWLKI.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/webhooks.app.scopes_update": { "id": "routes/webhooks.app.scopes_update", "parentId": "root", "path": "webhooks/app/scopes_update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/webhooks.app.scopes_update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/webhooks.app.uninstalled": { "id": "routes/webhooks.app.uninstalled", "parentId": "root", "path": "webhooks/app/uninstalled", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/webhooks.app.uninstalled-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.generate-tattoo": { "id": "routes/api.generate-tattoo", "parentId": "root", "path": "api/generate-tattoo", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.generate-tattoo-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/auth.login": { "id": "routes/auth.login", "parentId": "root", "path": "auth/login", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-BIq5w9qC.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/AppProxyProvider-DgU0IEHk.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-Dw7iv-tJ.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js"], "css": ["/assets/route-Xpdx9QZl.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/auth.$": { "id": "routes/auth.$", "parentId": "root", "path": "auth/*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/auth._-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app": { "id": "routes/app", "parentId": "root", "path": "app", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/app-DmXa7knW.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/AppProxyProvider-DgU0IEHk.js", "/assets/context-DyICP9bL.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app.additional": { "id": "routes/app.additional", "parentId": "routes/app", "path": "additional", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/app.additional-BkplF5p6.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app._index": { "id": "routes/app._index", "parentId": "routes/app", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": true, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-Ck9A9AWm.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/context-DyICP9bL.js", "/assets/index-Cs_PSIf1.js"], "css": ["/assets/route-iaGCa6r1.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-8baeb2f8.js", "version": "8baeb2f8", "sri": void 0 };
 const assetsBuildDirectory = "build/client";
 const basename = "/";
 const future = { "v8_middleware": false, "unstable_optimizeDeps": false, "unstable_splitRouteModules": false, "unstable_subResourceIntegrity": false, "unstable_viteEnvironmentApi": false };
