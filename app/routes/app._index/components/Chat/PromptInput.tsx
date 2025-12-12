@@ -1,8 +1,8 @@
 import React, { useRef, useEffect } from 'react';
-import SparkleIcon from "../../../assets/icons/sparkle.svg?react";
-import UploadIcon from "../../../assets/icons/upload.svg?react";
-import InspirationIcon from "../../../assets/icons/inspiration.svg?react";
-import CloseIcon from "../../../assets/icons/close.svg?react";
+import SendIcon from "../../../../assets/icons/send.svg?react";
+import UploadIcon from "../../../../assets/icons/upload.svg?react";
+import InspirationIcon from "../../../../assets/icons/inspiration.svg?react";
+import CloseIcon from "../../../../assets/icons/close.svg?react";
 
 import styles from '../styles.module.css';
 
@@ -35,12 +35,12 @@ export function PromptInput({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-resize textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
-    }
-  }, [prompt]);
+  // useEffect(() => {
+  //   if (textareaRef.current) {
+  //     textareaRef.current.style.height = "auto";
+  //     textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+  //   }
+  // }, [prompt]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -51,9 +51,8 @@ export function PromptInput({
 
 
   return (
-    <div className={`${styles.panel} rounded-xl sm:rounded-2xl transition-all duration-200`}>
-      <div className={`${styles.inner} rounded-xl sm:rounded-2xl`}>
-        <div className={`rounded-xl sm:rounded-2xl p-0 sm:p-2 border border-gray-100 shadow-sm bg-white`}>
+    
+        <div className={`rounded-xl bg-stone-100 shadow-none`}>
           <div className="relative w-full flex flex-col">
             <textarea
               ref={textareaRef}
@@ -122,7 +121,7 @@ export function PromptInput({
                       }`}
                     aria-label="Send prompt"
                   >
-                    <SparkleIcon width="14" height="14" />
+                    <SendIcon width="14" height="14" />
                   </button> : onSurpriseMe && (
                     <button
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-xs font-semibold transition-colors"
@@ -141,7 +140,6 @@ export function PromptInput({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+
   );
 }

@@ -8,14 +8,12 @@ import styles from './styles.module.css'
 
 // Components
 import { Header } from "./components/Header";
-import { PromptInput } from "./components/PromptInput";
-import { StyleSelector } from "./components/StyleSelector";
-import { ActionButtons } from "./components/ActionButtons";
+
 import { ResultGrid } from "./components/ResultGrid";
 import { ImagePreviewModal } from "./components/ImagePreviewModal";
 import { UploadModal } from "./components/UploadModal";
 
-import { ChatInterface } from "./components/Chat/ChatInterface";
+import { ChatInterface } from "./components/Chat/ChatPanel";
 
 // Types and Constants
 import { TattooStyle } from "./types";
@@ -40,7 +38,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return {
     status: "success",
     images: [
-      "https://images.unsplash.com/photo-1590246814883-05add5d833a6?q=80&w=600&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?q=80&w=600&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1562962230-16e4623d36e6?q=80&w=600&auto=format&fit=crop"
@@ -100,11 +97,6 @@ export default function TattooGenerator() {
     submit(formData, { method: "post" });
   };
 
-  const handleSurpriseMe = () => {
-    const randomPrompt = surprisePrompts[Math.floor(Math.random() * surprisePrompts.length)];
-    setPrompt(randomPrompt);
-  };
-
   const handleDropZoneDrop = useCallback(
     (_dropFiles: File[], acceptedFiles: File[], _rejectedFiles: File[]) => {
       setUploadedImage(acceptedFiles[0]);
@@ -153,18 +145,6 @@ export default function TattooGenerator() {
                     onUploadClick={() => setShowDesignChoicesModal(true)}
                     uploadedImage={uploadedImage}
                     onRemoveImage={handleRemoveImage}
-                  />
-
-                  <StyleSelector
-                    selectedStyle={selectedStyle}
-                    setSelectedStyle={setSelectedStyle}
-                  />
-
-                  <ActionButtons
-                    handleGenerate={handleGenerate}
-                    isLoading={isLoading}
-                    prompt={prompt}
-                    setShowDesignChoicesModal={setShowDesignChoicesModal}
                   />
                 </div>
 

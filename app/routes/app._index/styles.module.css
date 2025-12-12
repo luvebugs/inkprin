@@ -9,7 +9,6 @@
 }
 
 .inner {
-  margin: 2px;
   position: relative;
   z-index: 1;
   width: 100%;
@@ -23,6 +22,8 @@
   justify-content: center;
   height: -moz-max-content;
   height: max-content;
+  padding: 2px;
+
 }
 
 .panel:before {
@@ -42,3 +43,5 @@
 .shadow {
   box-shadow: 0 0 80px 0 #e0e4ff;
 }
+
+

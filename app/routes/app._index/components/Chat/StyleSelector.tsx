@@ -1,8 +1,8 @@
 import React from 'react';
-import SparkleIcon from "../../../assets/icons/sparkle.svg?react";
-import CheckIcon from "../../../assets/icons/check.svg?react";
-import { TattooStyle } from "../types";
-import { stylesList, styleImages } from "../constants";
+import SparkleIcon from "../../../../assets/icons/sparkle.svg?react";
+import CheckIcon from "../../../../assets/icons/check.svg?react";
+import { TattooStyle } from "../../types";
+import { stylesList, styleImages } from "../../constants";
 
 interface StyleSelectorProps {
   selectedStyle: TattooStyle;
@@ -11,13 +11,8 @@ interface StyleSelectorProps {
 
 export function StyleSelector({ selectedStyle, setSelectedStyle }: StyleSelectorProps) {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Select Style</h3>
-        <span className="text-sm text-gray-500">{selectedStyle}</span>
-      </div>
-      <div className="grid auto-cols-auto grid-flow-row gap-3 p-1" style={{ grid: "auto / auto-flow max-content", overflow: "auto" }}>
-        {stylesList.map((style) => {
+      <div className="grid auto-cols-auto grid-flow-row gap-3 p-1 mt-2" style={{ grid: "auto / auto-flow", overflow: "auto" }}>
+        {stylesList.map((style: TattooStyle | "No Style") => {
           const isPro = ["Ghibli", "Couple", "Creepy", "Dotwork"].includes(style);
           const isSelected = selectedStyle === style;
           return (
@@ -31,11 +26,11 @@ export function StyleSelector({ selectedStyle, setSelectedStyle }: StyleSelector
               type="button"
             >
               {isPro && (
-                <div className="absolute top-1 left-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full shadow-sm z-10">
-                  <span>PRO</span>
+                <div className="absolute top-1 left-1 flex items-center gap-0.5 px-1.5 py-0.3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-full shadow-sm z-10">
+                  <span className="leading-[16px] text-[10px]">PRO</span>
                 </div>
               )}
-              <div className={`rounded-full overflow-hidden w-16 h-16 flex items-center justify-center transition-all ${isSelected ? 'ring-2 ring-stone-500 shadow-md' : 'bg-gray-100 group-hover:shadow-md'}`}>
+              <div className={`size-8 sm:size-12 rounded-full overflow-hidden flex items-center justify-center transition-all ${isSelected ? 'ring-2 ring-stone-500 shadow-md' : 'bg-gray-100 group-hover:shadow-md'}`}>
                 {style === "No Style" ? (
                   <div className={`p-2 rounded-full transition-colors ${isSelected ? 'bg-stone-100 text-stone-600' : 'bg-gray-100 text-gray-500 group-hover:bg-white group-hover:text-indigo-500'}`}>
                     <SparkleIcon width="24" height="24" />
@@ -59,6 +54,5 @@ export function StyleSelector({ selectedStyle, setSelectedStyle }: StyleSelector
           );
         })}
       </div>
-    </div>
   );
 }
