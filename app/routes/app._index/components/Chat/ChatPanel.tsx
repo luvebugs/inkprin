@@ -56,6 +56,7 @@ export function ChatInterface({
   
   const [step, setStep] = useState<"prompt" | "style" | "generate">("prompt");
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isToggled, setIsToggled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom
@@ -152,6 +153,10 @@ export function ChatInterface({
       e.preventDefault();
       action?.();
     }
+  };
+
+  const onToggleStyle = () => {
+    setIsToggled((prev) => !prev);
   };
 
   const displayedMessages = isExpanded ? messages : messages.slice(-1);
@@ -262,6 +267,7 @@ export function ChatInterface({
               }
             />
             {/* {!selectedStyle || step === "style" && ( */}
+            {isToggled && (
               <StyleSelector
                 selectedStyle={selectedStyle || "No Style"}
                 setSelectedStyle={(style: TattooStyle) => handleStyleSelect(style)}
@@ -271,10 +277,11 @@ export function ChatInterface({
                 setSelectedFormat={setSelectedFormat}
                 selectedRatio={selectedRatio}
                 setSelectedRatio={setSelectedRatio}
-              />
+              />) }
             {/* )} */}
             <ActionButtons
               handleGenerate={handleSend}
+              onToggleStyle={onToggleStyle}
               isLoading={isLoading}
               prompt={inputValue}
               onUploadClick={onUploadClick || (() => { })}
