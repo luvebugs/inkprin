@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { ChatBubble } from "./MessageBubble";
 import { PromptInput } from "./PromptInput";
-import { TattooStyle } from "../../types";
+import { TattooStyle, TattooColor, OutputFormat, AspectRatio } from "../../types";
 import { stylesList, surprisePrompts } from "../../constants";
 import { ChevronDownIcon, ChevronUpIcon, MagicIcon, PersonIcon } from "@shopify/polaris-icons";
 import styles from '../../styles.module.css';
@@ -11,7 +11,7 @@ import { ActionButtons } from "./ActionButtons";
 
 
 interface ChatInterfaceProps {
-  onGenerate: (prompt: string, style: TattooStyle) => void;
+  onGenerate: (prompt: string, style: TattooStyle, color: TattooColor, format: OutputFormat, ratio: AspectRatio) => void;
   isLoading: boolean;
   generatedImages: string[];
   onDownload: (url: string) => void;
@@ -50,6 +50,10 @@ export function ChatInterface({
   const [inputValue, setInputValue] = useState("");
   const [currentPrompt, setCurrentPrompt] = useState("");
   const [selectedStyle, setSelectedStyle] = useState<TattooStyle | null>(null);
+  const [selectedColor, setSelectedColor] = useState<TattooColor>("Black & White");
+  const [selectedFormat, setSelectedFormat] = useState<OutputFormat>("White paper");
+  const [selectedRatio, setSelectedRatio] = useState<AspectRatio>("1:1 Square");
+  
   const [step, setStep] = useState<"prompt" | "style" | "generate">("prompt");
   const [isExpanded, setIsExpanded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -116,7 +120,7 @@ export function ChatInterface({
           content: `Updating the design with your feedback...`,
           type: "text"
         });
-        onGenerate(newPrompt, selectedStyle || "No Style");
+        onGenerate(newPrompt, selectedStyle || "No Style", selectedColor, selectedFormat, selectedRatio);
       }, 600);
     }
   };
@@ -134,7 +138,7 @@ export function ChatInterface({
         content: `Perfect! Creating a ${style} tattoo based on: "${currentPrompt}". This might take a moment...`,
         type: "text"
       });
-      onGenerate(currentPrompt, validStyle as TattooStyle);
+      onGenerate(currentPrompt, validStyle as TattooStyle, selectedColor, selectedFormat, selectedRatio);
     }, 600);
   };
 
@@ -177,7 +181,7 @@ export function ChatInterface({
         {!isExpanded ? (
           // Collapsed View: Popup Bubble Style
           displayedMessages.map((msg) => (
-            <div key={msg.id} className="relative bg-white rounded-xl p-2 shadow-md border border-gray-200 mx-1">
+            <div key={msg.id} className="relative bg-white rounded-xl p-3 shadow-lg border border-gray-200 mx-1">
               <div className="flex items-start gap-3">
                 <div className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center ${msg.role === 'user' ? "bg-indigo-100 text-indigo-600" : "bg-emerald-100 text-emerald-600"}`}>
                   {msg.role === 'user' ? <PersonIcon className="w-4 h-4" /> : <MagicIcon className="w-4 h-4" />}
@@ -190,7 +194,7 @@ export function ChatInterface({
                     {msg.content}
                   </div>
                   {msg.images && msg.images.length > 0 && (
-                    <div className="mt-3 grid grid-cols-2 gap-2">
+                    <div className="mt-3 grid grid-cols-6 gap-2">
                       {msg.images.map((img, idx) => (
                         <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200">
                           <img src={img} alt="Generated tattoo" className="w-full h-full object-cover" />
@@ -202,12 +206,14 @@ export function ChatInterface({
               </div>
 
               {/* Arrow pointing down */}
-              <div className="absolute -bottom-2 left-1/6 transform -translate-x-1/2 w-4 h-4 bg-white border-b border-r border-gray-200 rotate-45"></div>
+              <div className={`${styles.arrow} left-1/6`}>
+                  <span></span>
+              </div>
             </div>
           ))
         ) : (
           // Expanded View: Standard Chat List
-          <div className="h-[400px] pl-4 pr-4 custom-scrollbar overflow-auto">
+          <div className="h-[280px] pl-4 pr-4 custom-scrollbar overflow-auto">
             {displayedMessages.map((msg) => (
               <div key={msg.id}>
                 <ChatBubble
@@ -259,6 +265,12 @@ export function ChatInterface({
               <StyleSelector
                 selectedStyle={selectedStyle || "No Style"}
                 setSelectedStyle={(style: TattooStyle) => handleStyleSelect(style)}
+                selectedColor={selectedColor}
+                setSelectedColor={setSelectedColor}
+                selectedFormat={selectedFormat}
+                setSelectedFormat={setSelectedFormat}
+                selectedRatio={selectedRatio}
+                setSelectedRatio={setSelectedRatio}
               />
             {/* )} */}
             <ActionButtons

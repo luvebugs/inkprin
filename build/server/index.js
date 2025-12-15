@@ -344,7 +344,7 @@ const label = "_label_12o3y_35";
 const input = "_input_12o3y_43";
 const button = "_button_12o3y_47";
 const list = "_list_12o3y_51";
-const styles = {
+const styles$1 = {
   index,
   heading,
   text,
@@ -371,37 +371,37 @@ const route$1 = UNSAFE_withComponentProps(function App2() {
     showForm
   } = useLoaderData();
   return /* @__PURE__ */ jsx("div", {
-    className: styles.index,
+    className: styles$1.index,
     children: /* @__PURE__ */ jsxs("div", {
-      className: styles.content,
+      className: styles$1.content,
       children: [/* @__PURE__ */ jsx("h1", {
-        className: styles.heading,
+        className: styles$1.heading,
         children: "A short heading about [your app]"
       }), /* @__PURE__ */ jsx("p", {
-        className: styles.text,
+        className: styles$1.text,
         children: "A tagline about [your app] that describes your value proposition."
       }), showForm && /* @__PURE__ */ jsxs(Form, {
-        className: styles.form,
+        className: styles$1.form,
         method: "post",
         action: "/auth/login",
         children: [/* @__PURE__ */ jsxs("label", {
-          className: styles.label,
+          className: styles$1.label,
           children: [/* @__PURE__ */ jsx("span", {
             children: "Shop domain"
           }), /* @__PURE__ */ jsx("input", {
-            className: styles.input,
+            className: styles$1.input,
             type: "text",
             name: "shop"
           }), /* @__PURE__ */ jsx("span", {
             children: "e.g: my-shop-domain.myshopify.com"
           })]
         }), /* @__PURE__ */ jsx("button", {
-          className: styles.button,
+          className: styles$1.button,
           type: "submit",
           children: "Log in"
         })]
       }), /* @__PURE__ */ jsxs("ul", {
-        className: styles.list,
+        className: styles$1.list,
         children: [/* @__PURE__ */ jsxs("li", {
           children: [/* @__PURE__ */ jsx("strong", {
             children: "Product feature"
@@ -595,52 +595,69 @@ function Header() {
     /* @__PURE__ */ jsx("p", { className: "text-gray-500 text-lg", children: "Turn your ideas into unique tattoo designs in seconds" })
   ] });
 }
-const SvgEye = (props) => /* @__PURE__ */ React.createElement("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }), /* @__PURE__ */ React.createElement("path", { d: "M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }));
+const SvgEye = (props) => /* @__PURE__ */ React.createElement("svg", { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }), /* @__PURE__ */ React.createElement("path", { d: "M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }));
 const SvgDownload = (props) => /* @__PURE__ */ React.createElement("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M4 21H20", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }), /* @__PURE__ */ React.createElement("path", { d: "M12 3V17", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }), /* @__PURE__ */ React.createElement("path", { d: "M7 12L12 17L17 12", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }));
 function ResultGrid({ generatedImages, setPreviewImage, handleDownload }) {
   if (generatedImages.length === 0) return null;
+  const mainImage = generatedImages[0];
+  const thumbnails = generatedImages.slice(1);
+  const renderImageActions = (image) => /* @__PURE__ */ jsxs("div", { className: "absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2", children: [
+    /* @__PURE__ */ jsx(
+      "button",
+      {
+        className: "p-2 bg-white/90 hover:bg-white text-gray-700 rounded-full shadow-sm backdrop-blur-sm transition-transform hover:scale-105 cursor-pointer",
+        onClick: (e) => {
+          e.stopPropagation();
+          setPreviewImage(image);
+        },
+        title: "Preview",
+        type: "button",
+        children: /* @__PURE__ */ jsx(SvgEye, { width: "20", height: "20" })
+      }
+    ),
+    /* @__PURE__ */ jsx(
+      "button",
+      {
+        className: "p-2 bg-white/90 hover:bg-white text-gray-700 rounded-full shadow-sm backdrop-blur-sm transition-transform hover:scale-105 cursor-pointer",
+        onClick: (e) => {
+          e.stopPropagation();
+          handleDownload(image);
+        },
+        title: "Download",
+        type: "button",
+        children: /* @__PURE__ */ jsx(SvgDownload, { width: "20", height: "20" })
+      }
+    )
+  ] });
   return /* @__PURE__ */ jsxs("div", { className: "mt-8 space-y-4", children: [
     /* @__PURE__ */ jsx("h3", { className: "text-lg font-semibold text-gray-900", children: "Generated Results" }),
-    /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 md:grid-cols-4 gap-4", children: generatedImages.map((image, index2) => /* @__PURE__ */ jsxs("div", { className: "group relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-md transition-all", children: [
-      /* @__PURE__ */ jsx(
-        "img",
-        {
-          src: image,
-          alt: `Generated tattoo ${index2 + 1}`,
-          className: "w-full h-full object-cover cursor-pointer",
-          onClick: () => setPreviewImage(image)
-        }
-      ),
-      /* @__PURE__ */ jsx("div", { className: "absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" }),
-      /* @__PURE__ */ jsxs("div", { className: "absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col md:flex-row gap-4", children: [
+      /* @__PURE__ */ jsx("div", { className: "flex-1 min-w-0", children: /* @__PURE__ */ jsxs("div", { className: "group relative w-full aspect-square rounded-2xl overflow-hidden bg-gray-100 shadow-md hover:shadow-lg transition-all", children: [
         /* @__PURE__ */ jsx(
-          "button",
+          "img",
           {
-            className: "p-2 bg-white/90 hover:bg-white text-gray-700 rounded-full shadow-sm backdrop-blur-sm transition-transform hover:scale-105 cursor-pointer",
-            onClick: (e) => {
-              e.stopPropagation();
-              setPreviewImage(image);
-            },
-            title: "Preview",
-            type: "button",
-            children: /* @__PURE__ */ jsx(SvgEye, { width: "20", height: "20" })
+            src: mainImage,
+            alt: "Main generated tattoo",
+            className: "w-full h-full object-cover cursor-pointer",
+            onClick: () => setPreviewImage(mainImage)
           }
         ),
+        /* @__PURE__ */ jsx("div", { className: "absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors pointer-events-none" }),
+        renderImageActions(mainImage)
+      ] }) }),
+      thumbnails.length > 0 && /* @__PURE__ */ jsx("div", { className: "w-full md:w-1/3 relative flex-shrink-0", children: /* @__PURE__ */ jsx("div", { className: "md:absolute md:inset-0 md:overflow-y-auto md:pr-1 custom-scrollbar", children: /* @__PURE__ */ jsx("div", { className: "grid grid-cols-4 sm:grid-cols-5 md:grid-cols-1 gap-4 content-start", children: thumbnails.map((image, index2) => /* @__PURE__ */ jsxs("div", { className: "group relative aspect-square rounded-2xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-md transition-all", children: [
         /* @__PURE__ */ jsx(
-          "button",
+          "img",
           {
-            className: "p-2 bg-white/90 hover:bg-white text-gray-700 rounded-full shadow-sm backdrop-blur-sm transition-transform hover:scale-105 cursor-pointer",
-            onClick: (e) => {
-              e.stopPropagation();
-              handleDownload(image);
-            },
-            title: "Download",
-            type: "button",
-            children: /* @__PURE__ */ jsx(SvgDownload, { width: "20", height: "20" })
+            src: image,
+            alt: `Generated tattoo thumbnail ${index2 + 1}`,
+            className: "w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity",
+            onClick: () => setPreviewImage(image)
           }
-        )
-      ] })
-    ] }, index2)) })
+        ),
+        renderImageActions(image)
+      ] }, index2)) }) }) })
+    ] })
   ] });
 }
 function ImagePreviewModal({ previewImage, setPreviewImage, handleDownload }) {
@@ -742,7 +759,7 @@ function ChatBubble({ role, content: content2, images, onDownload, onImageClick 
     /* @__PURE__ */ jsx("div", { className: "flex-shrink-0", children: /* @__PURE__ */ jsx("div", { className: `w-8 h-8 rounded-full flex items-center justify-center ${isUser ? "bg-indigo-100 text-indigo-600" : "bg-emerald-100 text-emerald-600"}`, children: isUser ? /* @__PURE__ */ jsx(PersonIcon, { className: "w-5 h-5" }) : /* @__PURE__ */ jsx(MagicIcon, { className: "w-5 h-5" }) }) }),
     /* @__PURE__ */ jsxs("div", { className: `flex flex-col ${isUser ? "items-end" : "items-start"}`, children: [
       /* @__PURE__ */ jsx("div", { className: `p-3 rounded-2xl ${isUser ? "bg-indigo-600 text-white rounded-tr-sm" : "bg-white border border-gray-200 text-gray-800 rounded-tl-sm shadow-sm"}`, children: /* @__PURE__ */ jsx("div", { className: "text-sm md:text-base whitespace-pre-wrap leading-relaxed", children: content2 }) }),
-      images && images.length > 0 && /* @__PURE__ */ jsx("div", { className: "mt-3 grid grid-cols-2 gap-2 w-full max-w-md", children: images.map((img, index2) => /* @__PURE__ */ jsxs("div", { className: "relative group aspect-square rounded-lg overflow-hidden border border-gray-200", children: [
+      images && images.length > 0 && /* @__PURE__ */ jsx("div", { className: "mt-3 grid grid-cols-3 gap-2 w-full max-w-md", children: images.map((img, index2) => /* @__PURE__ */ jsxs("div", { className: "relative group aspect-square rounded-lg overflow-hidden border border-gray-200", children: [
         /* @__PURE__ */ jsx(
           "div",
           {
@@ -787,8 +804,8 @@ function ChatBubble({ role, content: content2, images, onDownload, onImageClick 
     ] })
   ] }) });
 }
-const SvgSend = (props) => /* @__PURE__ */ React.createElement("svg", { width: 24, height: 24, viewBox: "0 0 24 24", fill: "currentColor", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" }));
-const SvgUpload = (props) => /* @__PURE__ */ React.createElement("svg", { width: 20, height: 20, viewBox: "0 0 20 20", fill: "currentColor", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M2.5 3C2.5 2.46875 2.9375 2 3.5 2H7.5C8.03125 2 8.5 2.46875 8.5 3V15C8.5 16.6562 7.15625 18 5.5 18C3.84375 18 2.5 16.6562 2.5 15V3ZM9.46875 15.3125C9.46875 15.2188 9.5 15.125 9.5 15V6.8125L11.8438 4.46875C12.2188 4.09375 12.875 4.09375 13.25 4.46875L16.0938 7.3125C16.4688 7.6875 16.4688 8.3125 16.0938 8.71875L9.46875 15.3125ZM8.1875 18L14.1875 12H17.5C18.0312 12 18.5 12.4688 18.5 13V17C18.5 17.5625 18.0312 18 17.5 18H8.1875ZM6.5 4H4.5V6H6.5V4ZM4.5 8V10H6.5V8H4.5ZM5.5 15.75C5.90625 15.75 6.25 15.4375 6.25 15C6.25 14.5938 5.90625 14.25 5.5 14.25C5.0625 14.25 4.75 14.5938 4.75 15C4.75 15.4375 5.0625 15.75 5.5 15.75Z", fill: "currentColor" }));
+const SvgSparkle = (props) => /* @__PURE__ */ React.createElement("svg", { width: 21, height: 21, viewBox: "0 0 21 20", fill: "currentColor", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M12.7188 4.6875L14.5 4L15.1562 2.25C15.1875 2.09375 15.3438 2 15.5 2C15.625 2 15.7812 2.09375 15.8125 2.25L16.5 4L18.25 4.6875C18.4062 4.71875 18.5 4.875 18.5 5C18.5 5.15625 18.4062 5.3125 18.25 5.34375L16.5 6L15.8125 7.78125C15.7812 7.90625 15.625 8 15.5 8C15.3438 8 15.1875 7.90625 15.1562 7.78125L14.5 6L12.7188 5.34375C12.5938 5.3125 12.5 5.15625 12.5 5C12.5 4.875 12.5938 4.71875 12.7188 4.6875ZM8.90625 4.3125L10.5312 7.875L14.0938 9.5C14.2812 9.59375 14.4062 9.78125 14.4062 9.96875C14.4062 10.1562 14.2812 10.3438 14.0938 10.4062L10.5312 12.0625L8.90625 15.625C8.8125 15.8125 8.625 15.9375 8.4375 15.9375C8.25 15.9375 8.0625 15.8125 8 15.625L6.34375 12.0625L2.78125 10.4375C2.59375 10.3438 2.5 10.1562 2.5 9.96875C2.5 9.78125 2.59375 9.59375 2.78125 9.5L6.34375 7.875L8 4.3125C8.0625 4.125 8.25 4 8.4375 4C8.625 4 8.8125 4.125 8.90625 4.3125ZM14.5 14L15.1562 12.25C15.1875 12.0938 15.3438 12 15.5 12C15.625 12 15.7812 12.0938 15.8125 12.25L16.5 14L18.25 14.6875C18.4062 14.7188 18.5 14.875 18.5 15C18.5 15.1562 18.4062 15.3125 18.25 15.3438L16.5 16L15.8125 17.7812C15.7812 17.9062 15.625 18 15.5 18C15.3438 18 15.1875 17.9062 15.1562 17.7812L14.5 16L12.7188 15.3438C12.5938 15.3125 12.5 15.1562 12.5 15C12.5 14.875 12.5938 14.7188 12.7188 14.6875L14.5 14Z" }));
+const SvgUpload = (props) => /* @__PURE__ */ React.createElement("svg", { width: 24, height: 24, viewBox: "0 0 20 20", fill: "currentColor", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M2.5 3C2.5 2.46875 2.9375 2 3.5 2H7.5C8.03125 2 8.5 2.46875 8.5 3V15C8.5 16.6562 7.15625 18 5.5 18C3.84375 18 2.5 16.6562 2.5 15V3ZM9.46875 15.3125C9.46875 15.2188 9.5 15.125 9.5 15V6.8125L11.8438 4.46875C12.2188 4.09375 12.875 4.09375 13.25 4.46875L16.0938 7.3125C16.4688 7.6875 16.4688 8.3125 16.0938 8.71875L9.46875 15.3125ZM8.1875 18L14.1875 12H17.5C18.0312 12 18.5 12.4688 18.5 13V17C18.5 17.5625 18.0312 18 17.5 18H8.1875ZM6.5 4H4.5V6H6.5V4ZM4.5 8V10H6.5V8H4.5ZM5.5 15.75C5.90625 15.75 6.25 15.4375 6.25 15C6.25 14.5938 5.90625 14.25 5.5 14.25C5.0625 14.25 4.75 14.5938 4.75 15C4.75 15.4375 5.0625 15.75 5.5 15.75Z", fill: "currentColor" }));
 const SvgInspiration = (props) => /* @__PURE__ */ React.createElement("svg", { width: 20, height: 20, viewBox: "0 0 20 20", fill: "currentColor", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M6.65625 7.6875L9 3L11.3125 7.6875L16 10L11.3125 12.3438L9 17L6.65625 12.3438L2 10L6.65625 7.6875Z" }));
 const SvgClose = (props) => /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("line", { x1: 18, y1: 6, x2: 6, y2: 18 }), /* @__PURE__ */ React.createElement("line", { x1: 6, y1: 6, x2: 18, y2: 18 }));
 function PromptInput({
@@ -804,19 +821,13 @@ function PromptInput({
 }) {
   const imageUrl = uploadedImage ? window.URL.createObjectURL(uploadedImage) : null;
   const textareaRef = useRef(null);
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
-    }
-  }, [prompt]);
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend == null ? void 0 : handleSend();
     }
   };
-  return /* @__PURE__ */ jsx("div", { className: `rounded-xl sm:rounded-2xl p-0 sm:p-2 border border-gray-100 shadow-sm bg-white`, children: /* @__PURE__ */ jsxs("div", { className: "relative w-full flex flex-col", children: [
+  return /* @__PURE__ */ jsx("div", { className: `rounded-xl bg-stone-100 shadow-none`, children: /* @__PURE__ */ jsxs("div", { className: "relative w-full flex flex-col", children: [
     /* @__PURE__ */ jsx(
       "textarea",
       {
@@ -881,7 +892,7 @@ function PromptInput({
             disabled: disabled || !prompt.trim(),
             className: `p-2 rounded-full transition-all duration-200 ${prompt.trim() && !disabled ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm" : "bg-gray-100 text-gray-400 cursor-not-allowed"}`,
             "aria-label": "Send prompt",
-            children: /* @__PURE__ */ jsx(SvgSend, { width: "14", height: "14" })
+            children: /* @__PURE__ */ jsx(SvgSparkle, { width: "14", height: "14" })
           }
         ) : onSurpriseMe && /* @__PURE__ */ jsxs(
           "button",
@@ -950,61 +961,60 @@ const stylesList = [
   "Spiritual",
   "Dotwork"
 ];
-const SvgSparkle = (props) => /* @__PURE__ */ React.createElement("svg", { width: 21, height: 21, viewBox: "0 0 21 20", fill: "currentColor", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M12.7188 4.6875L14.5 4L15.1562 2.25C15.1875 2.09375 15.3438 2 15.5 2C15.625 2 15.7812 2.09375 15.8125 2.25L16.5 4L18.25 4.6875C18.4062 4.71875 18.5 4.875 18.5 5C18.5 5.15625 18.4062 5.3125 18.25 5.34375L16.5 6L15.8125 7.78125C15.7812 7.90625 15.625 8 15.5 8C15.3438 8 15.1875 7.90625 15.1562 7.78125L14.5 6L12.7188 5.34375C12.5938 5.3125 12.5 5.15625 12.5 5C12.5 4.875 12.5938 4.71875 12.7188 4.6875ZM8.90625 4.3125L10.5312 7.875L14.0938 9.5C14.2812 9.59375 14.4062 9.78125 14.4062 9.96875C14.4062 10.1562 14.2812 10.3438 14.0938 10.4062L10.5312 12.0625L8.90625 15.625C8.8125 15.8125 8.625 15.9375 8.4375 15.9375C8.25 15.9375 8.0625 15.8125 8 15.625L6.34375 12.0625L2.78125 10.4375C2.59375 10.3438 2.5 10.1562 2.5 9.96875C2.5 9.78125 2.59375 9.59375 2.78125 9.5L6.34375 7.875L8 4.3125C8.0625 4.125 8.25 4 8.4375 4C8.625 4 8.8125 4.125 8.90625 4.3125ZM14.5 14L15.1562 12.25C15.1875 12.0938 15.3438 12 15.5 12C15.625 12 15.7812 12.0938 15.8125 12.25L16.5 14L18.25 14.6875C18.4062 14.7188 18.5 14.875 18.5 15C18.5 15.1562 18.4062 15.3125 18.25 15.3438L16.5 16L15.8125 17.7812C15.7812 17.9062 15.625 18 15.5 18C15.3438 18 15.1875 17.9062 15.1562 17.7812L14.5 16L12.7188 15.3438C12.5938 15.3125 12.5 15.1562 12.5 15C12.5 14.875 12.5938 14.7188 12.7188 14.6875L14.5 14Z" }));
+const inner = "_inner_1c1o1_11";
+const panel = "_panel_1c1o1_17";
+const styles = {
+  inner,
+  panel
+};
 const SvgCheck = (props) => /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 3, xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("polyline", { points: "20 6 9 17 4 12" }));
 function StyleSelector({ selectedStyle, setSelectedStyle }) {
-  return /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ jsx("h3", { className: "text-lg font-semibold text-gray-900", children: "Select Style" }),
-      /* @__PURE__ */ jsx("span", { className: "text-sm text-gray-500", children: selectedStyle })
-    ] }),
-    /* @__PURE__ */ jsx("div", { className: "grid auto-cols-auto grid-flow-row gap-3 p-1", style: { grid: "auto / auto-flow max-content", overflow: "auto" }, children: stylesList.map((style) => {
-      const isPro = ["Ghibli", "Couple", "Creepy", "Dotwork"].includes(style);
-      const isSelected = selectedStyle === style;
-      return /* @__PURE__ */ jsxs(
-        "button",
-        {
-          className: `group relative flex flex-col items-center justify-center rounded-sm transition-all cursor-pointer aspect-square gap-2 ${isSelected ? "" : "bg-white"}`,
-          onClick: () => setSelectedStyle(style),
-          type: "button",
-          children: [
-            isPro && /* @__PURE__ */ jsx("div", { className: "absolute top-1 left-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full shadow-sm z-10", children: /* @__PURE__ */ jsx("span", { children: "PRO" }) }),
-            /* @__PURE__ */ jsxs("div", { className: `rounded-full overflow-hidden w-16 h-16 flex items-center justify-center transition-all ${isSelected ? "ring-2 ring-stone-500 shadow-md" : "bg-gray-100 group-hover:shadow-md"}`, children: [
-              style === "No Style" ? /* @__PURE__ */ jsx("div", { className: `p-2 rounded-full transition-colors ${isSelected ? "bg-stone-100 text-stone-600" : "bg-gray-100 text-gray-500 group-hover:bg-white group-hover:text-indigo-500"}`, children: /* @__PURE__ */ jsx(SvgSparkle, { width: "24", height: "24" }) }) : /* @__PURE__ */ jsx(
-                "img",
-                {
-                  src: styleImages[style],
-                  alt: style,
-                  className: "w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
-                }
-              ),
-              isSelected && /* @__PURE__ */ jsx("div", { className: "absolute top-1 right-2 text-white bg-black rounded-full p-0.5 shadow-sm z-10", children: /* @__PURE__ */ jsx(SvgCheck, { width: "12", height: "12" }) })
-            ] }),
-            /* @__PURE__ */ jsx("span", { className: `text-xs text-center ${isSelected ? "text-indigo-900 font-medium" : "text-gray-600"}`, children: style })
-          ]
-        },
-        style
-      );
-    }) })
-  ] });
+  return /* @__PURE__ */ jsx("div", { className: "grid auto-cols-auto grid-flow-row gap p-1 mt-2 custom-scrollbar", style: { grid: "auto / auto-flow", overflow: "auto" }, children: stylesList.map((style) => {
+    const isPro = ["Ghibli", "Couple", "Creepy", "Dotwork"].includes(style);
+    const isSelected = selectedStyle === style;
+    return /* @__PURE__ */ jsxs(
+      "button",
+      {
+        className: `group relative flex flex-col items-center justify-center rounded-sm transition-all cursor-pointer aspect-square gap-2 ${isSelected ? "" : "bg-white"}`,
+        onClick: () => setSelectedStyle(style),
+        type: "button",
+        children: [
+          isPro && /* @__PURE__ */ jsx("div", { className: "absolute top-1 left-1 flex items-center gap-0.5 px-1.5 py-0.3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-full shadow-sm z-10", children: /* @__PURE__ */ jsx("span", { className: "leading-[16px] text-[10px]", children: "PRO" }) }),
+          /* @__PURE__ */ jsxs("div", { className: `size-8 sm:size-12 rounded-full overflow-hidden flex items-center justify-center transition-all ${isSelected ? "ring-2 ring-stone-500 shadow-md" : "bg-gray-100 group-hover:shadow-md"}`, children: [
+            style === "No Style" ? /* @__PURE__ */ jsx("div", { className: `p-2 rounded-full transition-colors ${isSelected ? "bg-stone-100 text-stone-600" : "bg-gray-100 text-gray-500 group-hover:bg-white group-hover:text-indigo-500"}`, children: /* @__PURE__ */ jsx(SvgSparkle, { width: "24", height: "24" }) }) : /* @__PURE__ */ jsx(
+              "img",
+              {
+                src: styleImages[style],
+                alt: style,
+                className: "w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
+              }
+            ),
+            isSelected && /* @__PURE__ */ jsx("div", { className: "absolute top-1 right-2 text-white bg-black rounded-full p-0.5 shadow-sm z-10", children: /* @__PURE__ */ jsx(SvgCheck, { width: "12", height: "12" }) })
+          ] }),
+          /* @__PURE__ */ jsx("span", { className: `text-xs text-center ${isSelected ? "text-indigo-900 font-medium" : "text-gray-600"}`, children: style })
+        ]
+      },
+      style
+    );
+  }) });
 }
 const SvgLoading = (props) => /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", ...props }, /* @__PURE__ */ React.createElement("circle", { className: "opacity-25", cx: 12, cy: 12, r: 10, stroke: "currentColor", strokeWidth: 4 }), /* @__PURE__ */ React.createElement("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" }));
-const SvgGenerator = (props) => /* @__PURE__ */ React.createElement("svg", { width: 35, height: 35, viewBox: "0 0 33 33", fill: "none", xmlns: "http://www.w3.org/2000/svg", className: "absolute right-4", ...props }, /* @__PURE__ */ React.createElement("rect", { x: 0.5, y: 0.5, width: 32, height: 32, rx: 16, fill: "white" }), /* @__PURE__ */ React.createElement("path", { d: "M17.1562 9.9375L19.0312 13.9688L23.0625 15.8438C23.3125 15.9688 23.5 16.2188 23.5 16.5C23.5 16.8125 23.3125 17.0625 23.0625 17.1875L19.0312 19.0625L17.1562 23.0938C17.0312 23.3438 16.7812 23.5 16.5 23.5C16.1875 23.5 15.9375 23.3438 15.8125 23.0938L13.9375 19.0625L9.90625 17.1875C9.65625 17.0625 9.5 16.8125 9.5 16.5C9.5 16.2188 9.65625 15.9688 9.90625 15.8438L13.9375 13.9688L15.8125 9.9375C15.9375 9.6875 16.1875 9.5 16.5 9.5C16.7812 9.5 17.0312 9.6875 17.1562 9.9375Z", fill: "black" }));
+const SvgGenerator = (props) => /* @__PURE__ */ React.createElement("svg", { width: 24, height: 24, viewBox: "0 0 33 33", fill: "none", xmlns: "http://www.w3.org/2000/svg", className: "absolute right-4", ...props }, /* @__PURE__ */ React.createElement("rect", { x: 0.5, y: 0.5, width: 32, height: 32, rx: 16, fill: "white" }), /* @__PURE__ */ React.createElement("path", { d: "M17.1562 9.9375L19.0312 13.9688L23.0625 15.8438C23.3125 15.9688 23.5 16.2188 23.5 16.5C23.5 16.8125 23.3125 17.0625 23.0625 17.1875L19.0312 19.0625L17.1562 23.0938C17.0312 23.3438 16.7812 23.5 16.5 23.5C16.1875 23.5 15.9375 23.3438 15.8125 23.0938L13.9375 19.0625L9.90625 17.1875C9.65625 17.0625 9.5 16.8125 9.5 16.5C9.5 16.2188 9.65625 15.9688 9.90625 15.8438L13.9375 13.9688L15.8125 9.9375C15.9375 9.6875 16.1875 9.5 16.5 9.5C16.7812 9.5 17.0312 9.6875 17.1562 9.9375Z", fill: "black" }));
 function ActionButtons({
   handleGenerate,
   isLoading,
   prompt,
   onUploadClick
 }) {
-  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col sm:flex-row flex-wrap gap-4 justify-between items-center mt-4", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col sm:flex-row flex-wrap gap-4 justify-between items-center mt-2 sm:mt-4", children: [
     /* @__PURE__ */ jsx("div", { className: "flex gap-3 w-full sm:w-auto", children: /* @__PURE__ */ jsxs(
       "button",
       {
-        className: " hidden sm:inline-flex relative w-full sm:w-fit bg-gray-100 hover:bg-gray-200 text-black rounded-full border-2 border-solid border-gray-300 cursor-pointer transition-all duration-0 flex items-center justify-center gap-2 px-4 py-3",
+        className: " hidden sm:inline-flex relative w-full sm:w-fit bg-gray-100 hover:bg-gray-200 text-black rounded-full inset-ring-2 inset-ring-gray-300 cursor-pointer transition-all duration-0 flex items-center justify-center gap-2 px-4 py-3",
         onClick: onUploadClick,
         type: "button",
         children: [
-          /* @__PURE__ */ jsx(SvgUpload, { width: "18", height: "18" }),
+          /* @__PURE__ */ jsx(SvgUpload, { width: "20", height: "20" }),
           /* @__PURE__ */ jsx("span", { children: "Upload Reference" })
         ]
       }
@@ -1122,59 +1132,50 @@ function ChatInterface({
   };
   const displayedMessages = isExpanded ? messages : messages.slice(-1);
   const hasHistory = messages.length > 1;
-  return /* @__PURE__ */ jsxs("div", { className: `relative flex flex-col w-full mx-auto transition-all duration-300 ${isExpanded ? "bg-gray-50 rounded-2xl shadow-lg border border-gray-200 h-[600px]" : "h-auto bg-transparent"}`, children: [
+  return /* @__PURE__ */ jsxs("div", { className: `relative flex flex-col w-full mx-auto transition-all duration-300 ${isExpanded ? "bg-gray-50 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200" : "h-auto bg-transparent"}`, children: [
     hasHistory && /* @__PURE__ */ jsx(
       "button",
       {
         onClick: () => setIsExpanded(!isExpanded),
-        className: `absolute top-2 right-2 z-10 p-1.5 rounded-full shadow-sm transition-colors backdrop-blur-sm ${isExpanded ? "bg-white/80 hover:bg-white text-gray-500 hover:text-indigo-600" : "bg-white text-gray-400 hover:text-indigo-600 border border-gray-200"}`,
+        className: `absolute top-2 right-3 z-10 p-1.5 rounded-full shadow-sm transition-colors backdrop-blur-sm ${isExpanded ? "bg-white/80 hover:bg-white text-gray-500 hover:text-indigo-600" : "bg-white text-gray-400 hover:text-indigo-600 border border-gray-200"}`,
         title: isExpanded ? "Collapse chat" : "Show full history",
         "aria-label": isExpanded ? "Collapse chat" : "Show full history",
-        children: isExpanded ? /* @__PURE__ */ jsx(ChevronUpIcon, { className: "w-5 h-5" }) : /* @__PURE__ */ jsx(ChevronDownIcon, { className: "w-5 h-5" })
+        children: isExpanded ? /* @__PURE__ */ jsx(ChevronUpIcon, { className: "w-4 h-4" }) : /* @__PURE__ */ jsx(ChevronDownIcon, { className: "w-4 h-4" })
       }
     ),
     /* @__PURE__ */ jsx(
       "div",
       {
-        className: `flex-1 custom-scrollbar ${isExpanded ? "p-4 space-y-4" : "p-0 mb-4 overflow-visible"}`,
+        className: `flex-1 ${isExpanded ? "pt-4 pb-4 space-y-4" : "p-0 mb-4 overflow-visible"}`,
         role: "log",
         "aria-label": "Chat history",
         tabIndex: 0,
         children: !isExpanded ? (
           // Collapsed View: Popup Bubble Style
-          displayedMessages.map((msg) => /* @__PURE__ */ jsxs("div", { className: "relative bg-white rounded-xl p-2 shadow-md border border-gray-200 mx-1", children: [
+          displayedMessages.map((msg) => /* @__PURE__ */ jsxs("div", { className: "relative bg-white rounded-xl p-3 shadow-md border border-gray-200 mx-1", children: [
             /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-3", children: [
               /* @__PURE__ */ jsx("div", { className: `w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center ${msg.role === "user" ? "bg-indigo-100 text-indigo-600" : "bg-emerald-100 text-emerald-600"}`, children: msg.role === "user" ? /* @__PURE__ */ jsx(PersonIcon, { className: "w-4 h-4" }) : /* @__PURE__ */ jsx(MagicIcon, { className: "w-4 h-4" }) }),
               /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
                 /* @__PURE__ */ jsx("div", { className: "font-medium text-xs text-gray-900 mb-1", children: msg.role === "user" ? "You" : "AI Tattoo Artist" }),
                 /* @__PURE__ */ jsx("div", { className: "text-xs text-gray-600 leading-relaxed whitespace-pre-wrap", children: msg.content }),
-                msg.images && msg.images.length > 0 && /* @__PURE__ */ jsx("div", { className: "mt-3 grid grid-cols-2 gap-2", children: msg.images.map((img, idx) => /* @__PURE__ */ jsx("div", { className: "relative aspect-square rounded-lg overflow-hidden border border-gray-200", children: /* @__PURE__ */ jsx("img", { src: img, alt: "Generated tattoo", className: "w-full h-full object-cover" }) }, idx)) })
+                msg.images && msg.images.length > 0 && /* @__PURE__ */ jsx("div", { className: "mt-3 grid grid-cols-6 gap-2", children: msg.images.map((img, idx) => /* @__PURE__ */ jsx("div", { className: "relative aspect-square rounded-lg overflow-hidden border border-gray-200", children: /* @__PURE__ */ jsx("img", { src: img, alt: "Generated tattoo", className: "w-full h-full object-cover" }) }, idx)) })
               ] })
             ] }),
-            /* @__PURE__ */ jsx("div", { className: "absolute -bottom-2 left-1/5 transform -translate-x-1/2 w-4 h-4 bg-white border-b border-r border-gray-200 rotate-45" })
+            /* @__PURE__ */ jsx("div", { className: "absolute -bottom-2 left-1/6 transform -translate-x-1/2 w-4 h-4 bg-white border-b border-r border-gray-200 rotate-45" })
           ] }, msg.id))
         ) : (
           // Expanded View: Standard Chat List
-          /* @__PURE__ */ jsxs(Fragment, { children: [
-            displayedMessages.map((msg) => /* @__PURE__ */ jsxs("div", { children: [
-              /* @__PURE__ */ jsx(
-                ChatBubble,
-                {
-                  role: msg.role,
-                  content: msg.content,
-                  images: msg.images,
-                  onDownload,
-                  onImageClick
-                }
-              ),
-              msg.type === "style_selection" && !selectedStyle && step === "style" && /* @__PURE__ */ jsx("div", { className: "mt-2 mb-4", children: /* @__PURE__ */ jsx(
-                StyleSelector,
-                {
-                  selectedStyle: selectedStyle || "No Style",
-                  setSelectedStyle: (style) => handleStyleSelect(style)
-                }
-              ) })
-            ] }, msg.id)),
+          /* @__PURE__ */ jsxs("div", { className: "h-[400px] pl-4 pr-4 custom-scrollbar overflow-auto", children: [
+            displayedMessages.map((msg) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
+              ChatBubble,
+              {
+                role: msg.role,
+                content: msg.content,
+                images: msg.images,
+                onDownload,
+                onImageClick
+              }
+            ) }, msg.id)),
             isLoading && /* @__PURE__ */ jsx("div", { className: "flex w-full justify-start mb-4", children: /* @__PURE__ */ jsx("div", { className: "flex max-w-[80%] flex-row gap-3", children: /* @__PURE__ */ jsxs("div", { className: "w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center", children: [
               /* @__PURE__ */ jsx("div", { className: "w-2 h-2 bg-emerald-500 rounded-full animate-bounce", style: { animationDelay: "0ms" } }),
               /* @__PURE__ */ jsx("div", { className: "w-2 h-2 bg-emerald-500 rounded-full animate-bounce mx-0.5", style: { animationDelay: "150ms" } }),
@@ -1185,12 +1186,13 @@ function ChatInterface({
         )
       }
     ),
-    /* @__PURE__ */ jsxs("div", { className: "p-4 bg-white border-t border-gray-100", children: [
+    /* @__PURE__ */ jsx("div", { className: `${styles.panel} rounded-xl sm:rounded-2xl transition-all duration-200`, children: /* @__PURE__ */ jsx("div", { className: `${styles.inner} rounded-xl sm:rounded-2xl`, children: /* @__PURE__ */ jsxs("div", { className: "rounded-xl sm:rounded-2xl rounded-b-4xl sm:rounded-b-2xl   p-0 sm:p-2 border border-gray-100 shadow-sm bg-white", children: [
       /* @__PURE__ */ jsx(
         PromptInput,
         {
           prompt: inputValue,
           setPrompt: setInputValue,
+          uploadedImage,
           handleSend,
           onSurpriseMe: handleSurpriseMe,
           disabled: isLoading || step === "style" && !selectedStyle,
@@ -1198,7 +1200,14 @@ function ChatInterface({
           placeholder: step === "style" ? "Select a style above..." : step === "generate" ? "Describe changes or adjustments..." : "Describe your dream tattoo..."
         }
       ),
-      step === "generate" && /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsx(
+        StyleSelector,
+        {
+          selectedStyle: selectedStyle || "No Style",
+          setSelectedStyle: (style) => handleStyleSelect(style)
+        }
+      ),
+      /* @__PURE__ */ jsx(
         ActionButtons,
         {
           handleGenerate: handleSend,
@@ -1208,7 +1217,7 @@ function ChatInterface({
           })
         }
       )
-    ] }),
+    ] }) }) }),
     /* @__PURE__ */ jsx("style", { children: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 6px;
@@ -1243,7 +1252,7 @@ const action = async ({
   await new Promise((resolve) => setTimeout(resolve, 2e3));
   return {
     status: "success",
-    images: ["https://images.unsplash.com/photo-1590246814883-05add5d833a6?q=80&w=600&auto=format&fit=crop", "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?q=80&w=600&auto=format&fit=crop", "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop", "https://images.unsplash.com/photo-1562962230-16e4623d36e6?q=80&w=600&auto=format&fit=crop"]
+    images: ["https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?q=80&w=600&auto=format&fit=crop", "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop", "https://images.unsplash.com/photo-1562962230-16e4623d36e6?q=80&w=600&auto=format&fit=crop"]
   };
 };
 const route = UNSAFE_withComponentProps(function TattooGenerator() {
@@ -1256,7 +1265,7 @@ const route = UNSAFE_withComponentProps(function TattooGenerator() {
   const isLoading = navigation.state === "submitting";
   const [prompt, setPrompt] = useState("");
   const [selectedStyle, setSelectedStyle] = useState("No Style");
-  const [generatedImages, setGeneratedImages] = useState([]);
+  let [generatedImages, setGeneratedImages] = useState([]);
   const [showDesignChoicesModal, setShowDesignChoicesModal] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
@@ -1310,6 +1319,7 @@ const route = UNSAFE_withComponentProps(function TattooGenerator() {
   const handleRemoveImage = () => {
     setUploadedImage(null);
   };
+  generatedImages = ["https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?q=80&w=600&auto=format&fit=crop", "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop", "https://images.unsplash.com/photo-1562962230-16e4623d36e6?q=80&w=600&auto=format&fit=crop"];
   return /* @__PURE__ */ jsxs(Page, {
     fullWidth: true,
     children: [/* @__PURE__ */ jsx(Layout, {
@@ -1378,7 +1388,7 @@ const route9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   default: route,
   loader
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-CFeZ1GHa.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/index-Cs_PSIf1.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/root-Cccgm1jJ.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/index-Cs_PSIf1.js"], "css": ["/assets/root-BpBjoRpS.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/webhooks.app.scopes_update": { "id": "routes/webhooks.app.scopes_update", "parentId": "root", "path": "webhooks/app/scopes_update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/webhooks.app.scopes_update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/webhooks.app.uninstalled": { "id": "routes/webhooks.app.uninstalled", "parentId": "root", "path": "webhooks/app/uninstalled", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/webhooks.app.uninstalled-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.generate-tattoo": { "id": "routes/api.generate-tattoo", "parentId": "root", "path": "api/generate-tattoo", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.generate-tattoo-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/auth.login": { "id": "routes/auth.login", "parentId": "root", "path": "auth/login", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-BIq5w9qC.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/AppProxyProvider-DgU0IEHk.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-Dw7iv-tJ.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js"], "css": ["/assets/route-Xpdx9QZl.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/auth.$": { "id": "routes/auth.$", "parentId": "root", "path": "auth/*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/auth._-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app": { "id": "routes/app", "parentId": "root", "path": "app", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/app-DmXa7knW.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/AppProxyProvider-DgU0IEHk.js", "/assets/context-DyICP9bL.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app.additional": { "id": "routes/app.additional", "parentId": "routes/app", "path": "additional", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/app.additional-BkplF5p6.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app._index": { "id": "routes/app._index", "parentId": "routes/app", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": true, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-D622SFnD.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/context-DyICP9bL.js", "/assets/index-Cs_PSIf1.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-96b2d589.js", "version": "96b2d589", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/assets/entry.client-CFeZ1GHa.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/index-Cs_PSIf1.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/root-BSTDXhs2.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/index-Cs_PSIf1.js"], "css": ["/assets/root-Dy1kJLno.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/webhooks.app.scopes_update": { "id": "routes/webhooks.app.scopes_update", "parentId": "root", "path": "webhooks/app/scopes_update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/webhooks.app.scopes_update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/webhooks.app.uninstalled": { "id": "routes/webhooks.app.uninstalled", "parentId": "root", "path": "webhooks/app/uninstalled", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/webhooks.app.uninstalled-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.generate-tattoo": { "id": "routes/api.generate-tattoo", "parentId": "root", "path": "api/generate-tattoo", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.generate-tattoo-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/auth.login": { "id": "routes/auth.login", "parentId": "root", "path": "auth/login", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-BIq5w9qC.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/AppProxyProvider-DgU0IEHk.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-Dw7iv-tJ.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js"], "css": ["/assets/route-Xpdx9QZl.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/auth.$": { "id": "routes/auth.$", "parentId": "root", "path": "auth/*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/auth._-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app": { "id": "routes/app", "parentId": "root", "path": "app", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/app-DmXa7knW.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/AppProxyProvider-DgU0IEHk.js", "/assets/context-DyICP9bL.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app.additional": { "id": "routes/app.additional", "parentId": "routes/app", "path": "additional", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/app.additional-BkplF5p6.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/app._index": { "id": "routes/app._index", "parentId": "routes/app", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": true, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/route-BDOlvRU0.js", "imports": ["/assets/chunk-4WY6JWTD-DSrxSWZw.js", "/assets/context-DyICP9bL.js", "/assets/index-Cs_PSIf1.js"], "css": ["/assets/route-BKkd3yYL.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-0b53bade.js", "version": "0b53bade", "sri": void 0 };
 const assetsBuildDirectory = "build/client";
 const basename = "/";
 const future = { "v8_middleware": false, "unstable_optimizeDeps": false, "unstable_splitRouteModules": false, "unstable_subResourceIntegrity": false, "unstable_viteEnvironmentApi": false };

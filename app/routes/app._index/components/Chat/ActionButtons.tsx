@@ -17,15 +17,15 @@ export function ActionButtons({
   onUploadClick
 }: ActionButtonsProps) {
   return (
-    <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-between items-center mt-2 sm:mt-4">
+    <div className="flex flex-col sm:flex-row gap-4 justify-between items-center mt-2 sm:mt-4">
       <div className="flex gap-3 w-full sm:w-auto">
         <button
-          className=" hidden sm:inline-flex relative w-full sm:w-fit bg-gray-100 hover:bg-gray-200 text-black rounded-full border-2 border-solid border-gray-300 cursor-pointer transition-all duration-0 flex items-center justify-center gap-2 px-4 py-3"
+          className=" hidden sm:inline-flex relative w-full sm:w-fit bg-gray-100 hover:bg-gray-200 text-black rounded-full inset-ring-2 inset-ring-gray-300 cursor-pointer transition-all duration-0 flex items-center justify-center gap-2 px-4 py-3"
           onClick={onUploadClick}
           type="button"
         >
-          <UploadIcon width="18" height="18" />
-          <span>Upload Reference</span>
+          <UploadIcon width="20" height="20" />
+          <span className="whitespace-nowrap">Upload Reference</span>
         </button>
       </div>
       <button
@@ -41,7 +41,7 @@ export function ActionButtons({
           </>
         ) : (
           <>
-            <span>Generate Tattoo</span>
+            <span className="whitespace-nowrap">Generate Tattoo</span>
             <GeneratorIcon width="20" height="20" />
           </>
         )}

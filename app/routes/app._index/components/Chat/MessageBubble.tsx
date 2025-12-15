@@ -36,7 +36,7 @@ export function ChatBubble({ role, content, images, onDownload, onImageClick }: 
           </div>
 
           {images && images.length > 0 && (
-            <div className="mt-3 grid grid-cols-2 gap-2 w-full max-w-md">
+            <div className="mt-3 grid grid-cols-3 gap-2 w-full max-w-md">
               {images.map((img, index) => (
                 <div key={index} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200">
                   <div

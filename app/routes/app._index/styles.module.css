@@ -44,4 +44,36 @@
   box-shadow: 0 0 80px 0 #e0e4ff;
 }
 
+.arrow {
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+  position: absolute;
+  bottom: 0px;
+  transform: translatex(-50%) translatey(100%) rotate(180deg);
+}
 
+.arrow:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 24px;
+  height: 12px;
+  background: #fff;
+  clip-path: path('M 0 12 A 6 6 0 0 0 4.243 10.243 L 9.879 4.607 A 3 3 0 0 1 14.121 4.607 L 19.757 10.243 A 6 6 0 0 0 24 12 Z');
+}
+
+.arrow:after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 16px;
+  bottom: 0;
+  left: 4px;
+  margin: auto;
+  border-radius: 0 0 2px 0;
+  transform: translatey(50%) rotate(-135deg);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  z-index: 0;
+  background: transparent;
+}

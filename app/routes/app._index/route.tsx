@@ -16,62 +16,64 @@ import { UploadModal } from "./components/UploadModal";
 import { ChatInterface } from "./components/Chat/ChatPanel";
 
 // Types and Constants
-import { TattooStyle } from "./types";
+import { TattooStyle, TattooColor, OutputFormat, AspectRatio } from "./types";
 import { surprisePrompts } from "./constants";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
-  return { apiKey: process.env.SHOPIFY_API_KEY || "" };
+  return null;
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { admin } = await authenticate.admin(request);
   const formData = await request.formData();
-  const prompt = formData.get("prompt");
-  const style = formData.get("style");
+
+  const prompt = formData.get("prompt") as string;
+  const style = formData.get("style") as string;
+  const color = formData.get("color") as string;
+  const format = formData.get("format") as string;
+  const ratio = formData.get("ratio") as string;
 
   // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise(resolve => setTimeout(resolve, 2000));
 
   // In a real app, you would call an image generation API here
   // returning mock images for now
   return {
-    status: "success",
     images: [
+      "https://jattoo.com/cdn/shop/files/10002_b856667b-3da5-4614-9f62-87589773c11e.webp?v=1759074884&width=1000",
       "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?q=80&w=600&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1562962230-16e4623d36e6?q=80&w=600&auto=format&fit=crop"
     ]
   };
 };
 
-export default function TattooGenerator() {
-  const { apiKey } = useLoaderData<typeof loader>();
-  const actionData = useActionData<typeof action>();
-  const submit = useSubmit();
-  const navigation = useNavigation();
-  const isLoading = navigation.state === "submitting";
-
+export default function Index() {
   const [prompt, setPrompt] = useState("");
   const [selectedStyle, setSelectedStyle] = useState<TattooStyle>("No Style");
-  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
-  const [showDesignChoicesModal, setShowDesignChoicesModal] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [showDesignChoicesModal, setShowDesignChoicesModal] = useState(false);
 
-  // Load saved images from IndexedDB on mount
+  const submit = useSubmit();
+  const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
+  const isLoading = navigation.state === "submitting";
+
+  // Load history from IndexedDB on mount
   useEffect(() => {
     getAllImagesFromDB().then((images) => {
-      if (images && images.length > 0) {
-        setGeneratedImages(images.map((img) => img.url));
+      if (images.length > 0) {
+        // setGeneratedImages(images.map(img => img.url));
       }
     });
   }, []);
 
-  // Watch for action data to update generated images
+  // Handle action data (newly generated images)
   useEffect(() => {
-    if (actionData?.status === "success" && actionData.images) {
-      setGeneratedImages(actionData.images);
+    if (actionData?.images) {
+      setGeneratedImages(prev => [...actionData.images, ...prev]);
 
       // Save to IndexedDB
       actionData.images.forEach((url: string) => {
@@ -80,7 +82,13 @@ export default function TattooGenerator() {
     }
   }, [actionData, prompt, selectedStyle]);
 
-  const handleGenerate = async (promptText?: string, styleName?: TattooStyle) => {
+  const handleGenerate = async (
+    promptText?: string,
+    styleName?: TattooStyle,
+    color?: TattooColor,
+    format?: OutputFormat,
+    ratio?: AspectRatio
+  ) => {
     const textToUse = promptText || prompt;
     const styleToUse = styleName || selectedStyle;
 
@@ -93,6 +101,9 @@ export default function TattooGenerator() {
     const formData = new FormData();
     formData.append("prompt", textToUse);
     formData.append("style", styleToUse || "No Style");
+    if (color) formData.append("color", color);
+    if (format) formData.append("format", format);
+    if (ratio) formData.append("ratio", ratio);
 
     submit(formData, { method: "post" });
   };
@@ -135,7 +146,7 @@ export default function TattooGenerator() {
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Left Column - Inputs */}
-                <div className="lg:col-span-4 space-y-6">
+                <div className="lg:col-span-5 space-y-6">
                   <ChatInterface
                     onGenerate={handleGenerate}
                     isLoading={isLoading}
@@ -149,7 +160,7 @@ export default function TattooGenerator() {
                 </div>
 
                 {/* Right Column - Results */}
-                <div className="lg:col-span-8">
+                <div className="lg:col-span-7">
                   {generatedImages.length > 0 ? (
                     <ResultGrid
                       generatedImages={generatedImages}

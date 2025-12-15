@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import SendIcon from "../../../../assets/icons/send.svg?react";
+import SparkleIcon from "../../../../assets/icons/sparkle.svg?react";
 import UploadIcon from "../../../../assets/icons/upload.svg?react";
 import InspirationIcon from "../../../../assets/icons/inspiration.svg?react";
 import CloseIcon from "../../../../assets/icons/close.svg?react";
@@ -121,7 +121,7 @@ export function PromptInput({
                       }`}
                     aria-label="Send prompt"
                   >
-                    <SendIcon width="14" height="14" />
+                    <SparkleIcon width="14" height="14" />
                   </button> : onSurpriseMe && (
                     <button
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-xs font-semibold transition-colors"
